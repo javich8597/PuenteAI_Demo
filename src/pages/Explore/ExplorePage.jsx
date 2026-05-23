@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
-import { Search, MapPin, Users, ChevronRight, FileText, Heart, GraduationCap, Briefcase, Home } from 'lucide-react'
+import { Search, MapPin, Users, ChevronRight, FileText, Heart, GraduationCap, Briefcase, Home, ShieldCheck, HelpCircle } from 'lucide-react'
 import categories from '../../data/categories'
 import styles from './ExplorePage.module.css'
 
@@ -15,9 +15,9 @@ const categoryIconMap = {
 }
 
 const mockPeople = [
-  { id: 1, name: 'María C.', neighborhood: 'Nou Barris', time: '1 año', role: 'Madre Guía' },
-  { id: 2, name: 'Diana R.', neighborhood: 'Sants', time: '4 meses', role: 'Recién llegada' },
-  { id: 3, name: 'Laura P.', neighborhood: 'Gràcia', time: '3 años', role: 'Activa' },
+  { id: 1, name: 'María C.', neighborhood: 'Nou Barris', time: '1 año', role: 'Madre Tutora', isTutor: true },
+  { id: 2, name: 'Diana R.', neighborhood: 'Sants', time: '4 meses', role: 'Recién llegada', isTutor: false },
+  { id: 3, name: 'Laura P.', neighborhood: 'Gràcia', time: '3 años', role: 'Madre Tutora', isTutor: true },
 ]
 
 export default function ExplorePage() {
@@ -46,6 +46,26 @@ export default function ExplorePage() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Foro de Dudas</h2>
+        </div>
+        <motion.button 
+          className={styles.forumBanner}
+          onClick={() => navigate('/qanda')}
+          whileTap={{ scale: 0.98 }}
+        >
+          <div className={styles.forumBannerIcon}>
+            <HelpCircle size={28} color="var(--color-primary)" />
+          </div>
+          <div className={styles.forumBannerText}>
+            <h3>¿Tienes preguntas?</h3>
+            <p>Pregunta a la comunidad y busca respuestas validadas por MUSA.</p>
+          </div>
+          <ChevronRight size={24} color="var(--color-text-tertiary)" />
+        </motion.button>
+      </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Categorías de Ayuda</h2>
@@ -89,7 +109,10 @@ export default function ExplorePage() {
                     <MapPin size={12} /> {person.neighborhood}
                   </span>
                   <span className={styles.dot}>•</span>
-                  <span className={styles.metaItem}>{person.role}</span>
+                  <span className={`${styles.metaItem} ${person.isTutor ? styles.tutorRole : ''}`}>
+                    {person.isTutor && <ShieldCheck size={12} color="var(--color-primary)" />}
+                    {person.role}
+                  </span>
                 </div>
               </div>
               <button className={styles.connectBtn} onClick={() => navigate('/chat/new')}>

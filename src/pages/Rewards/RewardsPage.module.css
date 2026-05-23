@@ -1,0 +1,131 @@
+.page {
+  padding: var(--space-4);
+  padding-bottom: 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.statusCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.statusInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statusInfo h3 {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.seedCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  color: var(--color-navy);
+}
+
+.infoBtn {
+  color: var(--color-text-tertiary);
+  padding: var(--space-2);
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.bigBtn {
+  flex: 1;
+  border-radius: var(--radius-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border: none;
+  box-shadow: var(--shadow-md);
+  min-height: 200px;
+}
+
+.btnIconWrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-2);
+}
+
+.bigBtn h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+}
+
+.bigBtn p {
+  font-size: var(--text-sm);
+  opacity: 0.9;
+}
+
+.needHelpBtn {
+  background-color: var(--color-primary-light);
+  color: white;
+}
+
+.needHelpBtn .btnIconWrapper {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.wantHelpBtn {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.wantHelpBtn .btnIconWrapper {
+  background-color: rgba(255, 255, 255, 0.2);
+}

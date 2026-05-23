@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router'
-import { Home, Compass, MessageCircle, Users, User } from 'lucide-react'
+import { Home, Compass, MessageCircle, Users, User, Sprout } from 'lucide-react'
 import { motion } from 'motion/react'
 import styles from './BottomNav.module.css'
 
@@ -8,7 +8,7 @@ export default function BottomNav() {
     { to: '/', icon: Home, label: 'Inicio' },
     { to: '/explore', icon: Compass, label: 'Explorar' },
     { to: '/chat', icon: MessageCircle, label: 'Chat', hasBadge: true },
-    { to: '/groups', icon: Users, label: 'Grupos' },
+    { to: '/rewards', icon: Sprout, label: 'Jardín' },
     { to: '/privacy', icon: User, label: 'Perfil' },
   ]
 
