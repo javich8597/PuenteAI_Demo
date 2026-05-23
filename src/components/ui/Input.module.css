@@ -1,0 +1,165 @@
+/* ============================================================
+   Input — Estilos del componente
+   Tipos: text, email, tel, search, textarea
+   ============================================================ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  position: relative;
+  width: 100%;
+}
+
+/* ---- Contenedor del campo ---- */
+.fieldWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ---- Campo de entrada ---- */
+.input {
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-4) var(--space-4);
+  padding-top: var(--space-6);
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.15);
+}
+
+/* ---- Con icono a la izquierda ---- */
+.hasIcon {
+  padding-left: calc(var(--space-4) + 28px);
+}
+
+/* ---- Con botón de limpiar (search) ---- */
+.hasClear {
+  padding-right: calc(var(--space-4) + 28px);
+}
+
+/* ---- Textarea ---- */
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ---- Etiqueta flotante ---- */
+.label {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--text-base);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  transition:
+    top var(--duration-fast) var(--ease-out),
+    font-size var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+  transform-origin: left center;
+}
+
+/* Cuando el input está enfocado o tiene valor → sube la label */
+.input:focus ~ .label,
+.filled ~ .label {
+  top: var(--space-2);
+  transform: translateY(0);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+}
+
+/* Label con icono → desplazada */
+.labelWithIcon {
+  left: calc(var(--space-4) + 28px);
+}
+
+/* Label de textarea → se ancla arriba */
+.labelTextarea {
+  top: var(--space-4);
+  transform: none;
+}
+
+.input:focus ~ .labelTextarea,
+.filled ~ .labelTextarea {
+  top: var(--space-1);
+}
+
+/* ---- Icono del campo ---- */
+.iconWrapper {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  display: inline-flex;
+  pointer-events: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.input:focus ~ .iconWrapper,
+.filled ~ .iconWrapper {
+  color: var(--color-primary);
+}
+
+/* ---- Botón limpiar (search) ---- */
+.clearButton {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.clearButton:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* ---- Estado de error ---- */
+.error {
+  border-color: var(--color-error) !important;
+}
+
+.error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15) !important;
+}
+
+.errorText {
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  padding-left: var(--space-1);
+}
+
+/* ---- Texto de ayuda ---- */
+.helperText {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  padding-left: var(--space-1);
+}

@@ -1,0 +1,83 @@
+/* ============================================================
+   ProgressBar — Estilos del componente
+   Variantes: default, milestone
+   ============================================================ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* ---- Fila superior: etiqueta + porcentaje ---- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.percentage {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Track (fondo) ---- */
+.track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background-color: var(--color-border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+/* ---- Fill (barra de progreso) ---- */
+.fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  /* La animación de width se maneja con motion */
+}
+
+/* ---- Milestone dots ---- */
+.milestones {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  pointer-events: none;
+}
+
+.milestoneDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 1;
+}
+
+.milestoneDotReached {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.milestoneDotUnreached {
+  background-color: var(--color-border);
+}

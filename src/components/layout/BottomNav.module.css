@@ -1,0 +1,75 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--nav-height) + var(--safe-area-bottom));
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  z-index: var(--z-sticky);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+@media (min-width: 768px) {
+  .bottomNav {
+    position: absolute;
+  }
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: var(--nav-height);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.navItem.active {
+  color: var(--color-primary);
+}
+
+.iconContainer {
+  position: relative;
+  margin-bottom: 2px;
+}
+
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-error);
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: var(--weight-medium);
+}
+
+.indicator {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background-color: var(--color-primary);
+  border-radius: 0 0 4px 4px;
+}

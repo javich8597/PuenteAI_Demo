@@ -1,0 +1,312 @@
+/* ============================================================
+   HomePage.module.css — El Mapa del Viaje
+   Pantalla principal con el camino de integración
+   ============================================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-5);
+  padding-bottom: var(--space-4);
+  gap: var(--space-6);
+  min-height: 100%;
+}
+
+/* ---- Greeting Section ---- */
+.greeting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.greetingName {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  color: var(--color-navy);
+  line-height: 1.2;
+}
+
+.greetingSubtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.progressText {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+/* ---- Journey Map Container ---- */
+.journeySection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+.journeyMap {
+  position: relative;
+  padding: var(--space-4) 0;
+}
+
+/* ── Vertical path line ── */
+.pathLine {
+  position: absolute;
+  left: 28px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 2px;
+  z-index: 0;
+}
+
+/* ── Milestone nodes ── */
+.milestone {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.milestoneNode {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.4rem;
+  position: relative;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.milestone:hover .milestoneNode {
+  transform: scale(1.08);
+}
+
+/* Status variants */
+.nodeCompleted {
+  composes: milestoneNode;
+  background-color: var(--color-success);
+  color: white;
+  box-shadow: 0 3px 12px rgba(76, 175, 80, 0.25);
+}
+
+.nodeCurrent {
+  composes: milestoneNode;
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-glow-primary);
+}
+
+/* Pulse ring for current node */
+.pulseRing {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-primary);
+  opacity: 0;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+.nodeLocked {
+  composes: milestoneNode;
+  background-color: var(--color-border-light);
+  color: var(--color-text-tertiary);
+}
+
+/* Milestone text */
+.milestoneContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--space-2);
+  flex: 1;
+}
+
+.milestoneTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+  line-height: 1.3;
+}
+
+.milestoneTitleLocked {
+  composes: milestoneTitle;
+  color: var(--color-text-tertiary);
+}
+
+.milestoneDesc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.milestoneDescLocked {
+  composes: milestoneDesc;
+  color: var(--color-text-tertiary);
+  opacity: 0.7;
+}
+
+.currentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding: 2px var(--space-2);
+  background-color: rgba(224, 122, 95, 0.1);
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+/* ---- Quick Actions ---- */
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.actionsScroll {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.actionsScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 100px;
+  padding: var(--space-4) var(--space-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.actionCard:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: white;
+}
+
+.actionLabel {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+  text-align: center;
+}
+
+/* ---- Activity Feed ---- */
+.activityFeed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.activityCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.activityCard:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.activityAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  flex-shrink: 0;
+}
+
+.activityContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.activityText {
+  font-size: var(--text-sm);
+  color: var(--color-navy);
+  line-height: 1.5;
+}
+
+.activityTime {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}

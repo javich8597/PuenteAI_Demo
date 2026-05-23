@@ -1,0 +1,168 @@
+/* ============================================================
+   Button — Estilos del componente
+   Variantes: primary, secondary, ghost, danger, emergency
+   Tamaños: sm, md, lg
+   ============================================================ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+/* ---- Tamaños ---- */
+.sm {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+}
+
+.md {
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+}
+
+.lg {
+  min-height: 56px;
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-xl);
+}
+
+/* ---- Variante: Primary ---- */
+.primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.primary:active:not(:disabled) {
+  transform: scale(0.97);
+  background-color: var(--color-primary-dark);
+}
+
+/* ---- Variante: Secondary ---- */
+.secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text-inverse);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-secondary-dark);
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+.secondary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ---- Variante: Ghost ---- */
+.ghost {
+  background-color: transparent;
+  color: var(--color-navy);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+}
+
+.ghost:active:not(:disabled) {
+  background-color: var(--color-surface-active);
+}
+
+/* ---- Variante: Danger ---- */
+.danger {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: #e55b5b;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.35);
+}
+
+.danger:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ---- Variante: Emergency ---- */
+.emergency {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  font-weight: var(--weight-bold);
+  animation: emergencyPulse 2s ease-in-out infinite;
+}
+
+.emergency:hover:not(:disabled) {
+  background-color: #e55b5b;
+}
+
+@keyframes emergencyPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 107, 107, 0);
+  }
+}
+
+/* ---- Estado: Disabled ---- */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- Ancho completo ---- */
+.fullWidth {
+  width: 100%;
+}
+
+/* ---- Spinner de carga ---- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: var(--radius-full);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Icono ---- */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

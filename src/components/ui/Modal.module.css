@@ -1,0 +1,89 @@
+/* ============================================================
+   Modal — Estilos del componente
+   Tamaños: sm, md, lg
+   ============================================================ */
+
+/* ---- Overlay/Backdrop ---- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 45, 64, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+/* ---- Panel del modal ---- */
+.panel {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ---- Tamaños ---- */
+.sm {
+  max-width: 320px;
+}
+
+.md {
+  max-width: 420px;
+}
+
+.lg {
+  max-width: 540px;
+}
+
+/* ---- Encabezado ---- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+/* ---- Botón de cerrar ---- */
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  transition: background-color var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* ---- Contenido ---- */
+.content {
+  padding: var(--space-5);
+  flex: 1;
+  overflow-y: auto;
+}

@@ -1,0 +1,325 @@
+/* ============================================================
+   OnboardingPage.module.css — Registro progresivo en 3 pasos
+   Diseño simple, tarjetas grandes, input accesible
+   ============================================================ */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  padding: var(--space-6);
+  padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---- Header / Progress ---- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-navy);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.progressContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progressLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-medium);
+  text-align: right;
+}
+
+/* ---- Content Area ---- */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepHeading {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  color: var(--color-navy);
+  line-height: 1.2;
+  margin-bottom: var(--space-2);
+}
+
+.stepSubtext {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  line-height: 1.5;
+}
+
+/* ---- Step 1: Name Input ---- */
+.nameInput {
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--space-5);
+  font-size: var(--text-xl);
+  font-family: var(--font-body);
+  font-weight: var(--weight-medium);
+  color: var(--color-navy);
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.nameInput::placeholder {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+}
+
+.nameInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.12);
+}
+
+.inputHint {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-2);
+}
+
+/* Social login buttons */
+.socialSection {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.socialLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.socialButtons {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.socialBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-size: var(--text-xl);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.socialBtn:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Step 2: Time Selection Cards ---- */
+.timeCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.timeCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.timeCard:hover {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-surface-hover);
+}
+
+.timeCardSelected {
+  composes: timeCard;
+  border-color: var(--color-primary);
+  background-color: rgba(224, 122, 95, 0.04);
+  box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.1);
+}
+
+.timeEmoji {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.timeLabel {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+/* ---- Step 3: Category Cards Grid ---- */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-3);
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  position: relative;
+}
+
+.categoryCard:hover {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-surface-hover);
+}
+
+.categoryCardSelected {
+  composes: categoryCard;
+  border-color: var(--color-primary);
+  background-color: rgba(224, 122, 95, 0.04);
+}
+
+.categoryIcon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xl);
+}
+
+.categoryName {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+.categoryDesc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+.checkMark {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  color: white;
+}
+
+/* ---- Bottom Action ---- */
+.bottomAction {
+  margin-top: auto;
+  padding-top: var(--space-6);
+}
+
+.continueBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 56px;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-primary);
+  transition: transform var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out);
+}
+
+.continueBtn:hover {
+  transform: translateY(-1px);
+}
+
+.continueBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.continueBtnFinal {
+  composes: continueBtn;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  box-shadow: var(--shadow-glow-secondary);
+}

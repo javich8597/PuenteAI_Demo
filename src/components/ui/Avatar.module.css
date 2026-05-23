@@ -1,0 +1,116 @@
+/* ============================================================
+   Avatar — Estilos del componente
+   Tamaños: sm=32, md=40, lg=56, xl=80
+   ============================================================ */
+
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  overflow: visible;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ---- Tamaños ---- */
+.sm {
+  width: 32px;
+  height: 32px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+}
+
+.lg {
+  width: 56px;
+  height: 56px;
+}
+
+.xl {
+  width: 80px;
+  height: 80px;
+}
+
+/* ---- Imagen ---- */
+.image {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+/* ---- Fallback con iniciales ---- */
+.fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.fallbackSm {
+  font-size: var(--text-xs);
+}
+
+.fallbackMd {
+  font-size: var(--text-sm);
+}
+
+.fallbackLg {
+  font-size: var(--text-lg);
+}
+
+.fallbackXl {
+  font-size: var(--text-2xl);
+}
+
+/* ---- Indicador de confianza/estado ---- */
+.trustDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+}
+
+.trustDotSm {
+  width: 10px;
+  height: 10px;
+}
+
+.trustDotMd {
+  width: 12px;
+  height: 12px;
+}
+
+.trustDotLg {
+  width: 14px;
+  height: 14px;
+}
+
+.trustDotXl {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Colores del indicador de confianza ---- */
+.trustVerified {
+  background-color: var(--color-success);
+}
+
+.trustActive {
+  background-color: var(--color-accent-dark);
+}
+
+.trustNew {
+  background-color: var(--color-text-tertiary);
+}

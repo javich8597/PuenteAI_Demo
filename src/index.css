@@ -1,0 +1,250 @@
+/* ============================================================
+   PuenteAI — Design System & Global Styles
+   Trust-aware pathways for migrant integration
+   ============================================================ */
+
+/* ---- CSS Reset ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ---- Design Tokens ---- */
+:root {
+  /* — Colors — */
+  --color-primary: #E07A5F;
+  --color-primary-light: #F0A08A;
+  --color-primary-dark: #C4603F;
+  --color-secondary: #81B29A;
+  --color-secondary-light: #A8D5BA;
+  --color-secondary-dark: #5E9478;
+  --color-accent: #F2CC8F;
+  --color-accent-light: #F7DDB3;
+  --color-accent-dark: #D4A85A;
+  --color-navy: #3D405B;
+  --color-navy-light: #5C5F7A;
+  --color-navy-dark: #2A2D40;
+
+  /* — Surfaces — */
+  --color-bg: #FAFAF8;
+  --color-bg-warm: #F4F1DE;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F8F6F0;
+  --color-surface-active: #F0EDE3;
+  --color-border: #E8E4D9;
+  --color-border-light: #F0EDE5;
+
+  /* — Text — */
+  --color-text: #2A2D40;
+  --color-text-secondary: #6B6D7B;
+  --color-text-tertiary: #9B9DA8;
+  --color-text-inverse: #FFFFFF;
+  --color-text-on-primary: #FFFFFF;
+
+  /* — Semantic — */
+  --color-success: #4CAF50;
+  --color-success-bg: #E8F5E9;
+  --color-warning: #FF9800;
+  --color-warning-bg: #FFF3E0;
+  --color-error: #FF6B6B;
+  --color-error-bg: #FFEBEE;
+  --color-info: #2196F3;
+  --color-info-bg: #E3F2FD;
+
+  /* — Typography — */
+  --font-heading: 'Nunito', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* — Spacing — */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* — Radii — */
+  --radius-sm: 0.5rem;   /* 8px */
+  --radius-md: 0.75rem;  /* 12px */
+  --radius-lg: 1rem;     /* 16px */
+  --radius-xl: 1.5rem;   /* 24px */
+  --radius-2xl: 2rem;    /* 32px */
+  --radius-full: 9999px;
+
+  /* — Shadows — */
+  --shadow-sm: 0 1px 3px rgba(42, 45, 64, 0.06), 0 1px 2px rgba(42, 45, 64, 0.04);
+  --shadow-md: 0 4px 12px rgba(42, 45, 64, 0.08), 0 2px 4px rgba(42, 45, 64, 0.04);
+  --shadow-lg: 0 10px 30px rgba(42, 45, 64, 0.1), 0 4px 8px rgba(42, 45, 64, 0.05);
+  --shadow-xl: 0 20px 50px rgba(42, 45, 64, 0.12), 0 8px 16px rgba(42, 45, 64, 0.06);
+  --shadow-glow-primary: 0 4px 20px rgba(224, 122, 95, 0.3);
+  --shadow-glow-secondary: 0 4px 20px rgba(129, 178, 154, 0.3);
+
+  /* — Transitions — */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* — Z-Index — */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-modal: 50;
+  --z-emergency: 100;
+  --z-quick-exit: 999;
+
+  /* — Layout — */
+  --nav-height: 4rem;      /* 64px */
+  --header-height: 3.5rem; /* 56px */
+  --max-width: 428px;       /* Mobile-first max width */
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Utility Classes ---- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- App Container ---- */
+#root {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Scrollbar Styling ---- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+/* ---- Focus Styles (Accessibility) ---- */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- Selection ---- */
+::selection {
+  background-color: var(--color-primary-light);
+  color: var(--color-navy-dark);
+}
+
+/* ---- Typography Utility ---- */
+.heading {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  color: var(--color-navy);
+}
+
+/* ---- Page transition wrapper ---- */
+.page-container {
+  flex: 1;
+  padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom) + var(--space-4));
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* ---- Desktop centering ---- */
+@media (min-width: 768px) {
+  .page-container {
+    max-width: 480px;
+  }
+  
+  #root {
+    background-color: var(--color-bg-warm);
+  }
+
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: var(--color-bg);
+    min-height: 100dvh;
+    position: relative;
+    box-shadow: var(--shadow-xl);
+  }
+}

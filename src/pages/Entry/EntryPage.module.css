@@ -1,0 +1,221 @@
+/* ============================================================
+   EntryPage.module.css — Primera pantalla de PuenteAI
+   Gradiente cálido, botones grandes, confianza inmediata
+   ============================================================ */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(
+    165deg,
+    var(--color-bg-warm) 0%,
+    #faf3e8 40%,
+    #f8e8e0 100%
+  );
+  padding: var(--space-8) var(--space-6);
+  padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+}
+
+/* ---- Logo Section ---- */
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding-top: var(--space-10);
+}
+
+.logoSvg {
+  width: 180px;
+  height: auto;
+}
+
+.tagline {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--color-navy);
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+/* ---- Actions Section ---- */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 360px;
+}
+
+.btnPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 56px;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-primary);
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(224, 122, 95, 0.4);
+}
+
+.btnPrimary:active {
+  transform: translateY(0);
+}
+
+.btnSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 56px;
+  background-color: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.btnSecondary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+.btnGhost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 48px;
+  background-color: transparent;
+  color: var(--color-navy-light);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.btnGhost:hover {
+  color: var(--color-navy);
+}
+
+/* ---- Bottom Section ---- */
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 360px;
+}
+
+/* ---- Emergency Card ---- */
+.emergencyCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4);
+  background-color: var(--color-bg-warm);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+}
+
+.emergencyCard:hover {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.emergencyIcon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(224, 122, 95, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+}
+
+.emergencyText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.emergencyTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
+.emergencyDesc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* ---- Language Toggle ---- */
+.languageToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background-color: rgba(61, 64, 91, 0.06);
+  border-radius: var(--radius-full);
+}
+
+.langBtn {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-tertiary);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  min-height: 32px;
+}
+
+.langBtnActive {
+  composes: langBtn;
+  background-color: var(--color-surface);
+  color: var(--color-navy);
+  box-shadow: var(--shadow-sm);
+}

@@ -1,0 +1,13 @@
+.appShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: var(--header-height);
+  padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom) + var(--space-4));
+}
