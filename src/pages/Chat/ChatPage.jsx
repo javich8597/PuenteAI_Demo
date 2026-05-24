@@ -1,14 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
-import { MessageCircle, Users, Search, ChevronRight, Check, CheckCheck } from 'lucide-react'
+import { MessageCircle, Users, Search, ChevronRight, Check, CheckCheck, Edit } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
 import styles from './ChatPage.module.css'
 
 export default function ChatPage() {
   const navigate = useNavigate()
-  const conversations = useChatStore((s) => s.conversations)
+  const { conversations, fetchMessages, subscribeToMessages } = useChatStore()
   const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    fetchMessages()
+    const unsubscribe = subscribeToMessages()
+    return () => unsubscribe()
+  }, [fetchMessages, subscribeToMessages])
 
   const filteredConvs = conversations.filter(c => {
     if (c.name) return c.name.toLowerCase().includes(searchQuery.toLowerCase())

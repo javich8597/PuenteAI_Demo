@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { AnimatePresence } from 'motion/react'
 import { useAuthStore } from './store/useAuthStore'
@@ -8,6 +9,7 @@ import AppShell from './components/layout/AppShell'
 // Pages
 import EntryPage from './pages/Entry/EntryPage'
 import OnboardingPage from './pages/Onboarding/OnboardingPage'
+import LoginPage from './pages/Login/LoginPage'
 import HomePage from './pages/Home/HomePage'
 import CategoriesPage from './pages/Categories/CategoriesPage'
 import CategoryDetail from './pages/Categories/CategoryDetail'
@@ -40,6 +42,45 @@ function ProtectedRoute({ children }) {
   return children
 }
 
+/** 
+ * RestrictedRoute — para áreas comunitarias.
+ * Si es Invitada, muestra un cartel amigable en lugar de la vista.
+ */
+function RestrictedRoute({ children }) {
+  const { isAuthenticated, isGuest } = useAuthStore()
+  
+  if (isGuest && !isAuthenticated) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-navy)', marginBottom: '1rem' }}>
+          ¡Únete a la Comunidad! ✨
+        </h2>
+        <p style={{ color: 'var(--color-text-secondary)', marginBottom: '2rem', maxWidth: '300px' }}>
+          Para proteger la privacidad de nuestras madres, necesitas registrarte para acceder a los foros, chats y grupos de apoyo.
+        </p>
+        <button 
+          onClick={() => window.location.href = '/entry'}
+          style={{ 
+            padding: '1rem 2rem', 
+            backgroundColor: 'var(--color-primary)', 
+            color: 'white', 
+            borderRadius: 'var(--radius-full)',
+            border: 'none',
+            fontWeight: 'bold',
+            fontSize: '1.1rem'
+          }}
+        >
+          Crear mi cuenta gratuita
+        </button>
+      </div>
+    )
+  }
+  
+  if (!isAuthenticated && !isGuest) return <Navigate to="/entry" replace />
+  
+  return children
+}
+
 function AdminRoute({ children }) {
   const { isAdmin } = useAuthStore()
   if (!isAdmin) return <Navigate to="/" replace />
@@ -47,12 +88,23 @@ function AdminRoute({ children }) {
 }
 
 export default function App() {
+  const { initializeAuth, isLoading } = useAuthStore()
+
+  useEffect(() => {
+    initializeAuth()
+  }, [initializeAuth])
+
+  if (isLoading) {
+    return <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>Cargando sesión...</div>
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         {/* --- Rutas públicas --- */}
         <Route path="/entry" element={<EntryPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/safety" element={<SafetyPage />} />
 
         {/* --- Rutas protegidas (app principal) --- */}
@@ -66,13 +118,13 @@ export default function App() {
           <Route path="categories/:id" element={<CategoryDetail />} />
           <Route path="recommendations" element={<RecommendationsPage />} />
           <Route path="explore" element={<ExplorePage />} />
-          <Route path="chat" element={<ChatPage />} />
-          <Route path="chat/:id" element={<ChatConversation />} />
-          <Route path="groups" element={<GroupsPage />} />
-          <Route path="groups/:id" element={<GroupDetail />} />
-          <Route path="qanda" element={<QandAPage />} />
-          <Route path="qanda/:id" element={<QuestionDetail />} />
-          <Route path="rewards" element={<RewardsPage />} />
+          <Route path="chat" element={<RestrictedRoute><ChatPage /></RestrictedRoute>} />
+          <Route path="chat/:id" element={<RestrictedRoute><ChatConversation /></RestrictedRoute>} />
+          <Route path="groups" element={<RestrictedRoute><GroupsPage /></RestrictedRoute>} />
+          <Route path="groups/:id" element={<RestrictedRoute><GroupDetail /></RestrictedRoute>} />
+          <Route path="qanda" element={<RestrictedRoute><QandAPage /></RestrictedRoute>} />
+          <Route path="qanda/:id" element={<RestrictedRoute><QuestionDetail /></RestrictedRoute>} />
+          <Route path="rewards" element={<RestrictedRoute><RewardsPage /></RestrictedRoute>} />
           <Route path="privacy" element={<PrivacyPage />} />
         </Route>
 

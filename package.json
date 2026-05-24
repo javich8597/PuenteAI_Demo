@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@vitejs/plugin-react": "^6.0.2",
+    "playwright": "^1.60.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.12"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.16.0",
     "motion": "^12.40.0",
     "react": "^19.2.6",

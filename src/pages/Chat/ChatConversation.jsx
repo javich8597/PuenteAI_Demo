@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { motion } from 'motion/react'
-import { ChevronLeft, Send, Phone, MoreVertical } from 'lucide-react'
+import { ChevronLeft, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Mic } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
 import styles from './ChatConversation.module.css'
 
 export default function ChatConversation() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { conversations, messages, sendMessage, setActiveConversation } = useChatStore()
+  const { conversations, messages, sendMessage, setActiveConversation, fetchMessages, subscribeToMessages } = useChatStore()
   
   const [inputText, setInputText] = useState('')
   const messagesEndRef = useRef(null)
@@ -17,8 +17,11 @@ export default function ChatConversation() {
   const currentMessages = messages[id] || []
 
   useEffect(() => {
+    fetchMessages()
+    const unsubscribe = subscribeToMessages()
     setActiveConversation(id)
-  }, [id, setActiveConversation])
+    return () => unsubscribe()
+  }, [id, setActiveConversation, fetchMessages, subscribeToMessages])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

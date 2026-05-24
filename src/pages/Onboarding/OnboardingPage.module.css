@@ -91,7 +91,27 @@
   line-height: 1.5;
 }
 
-/* ---- Step 1: Name Input ---- */
+/* ---- Step 1: Form Inputs ---- */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.inputLabel {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+}
+
 .nameInput {
   width: 100%;
   height: 56px;
@@ -122,6 +142,95 @@
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
   margin-top: var(--space-2);
+}
+
+/* skip button */
+.skipBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: var(--space-2);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.skipBtn:hover {
+  color: var(--color-navy);
+}
+
+/* ---- Step 2: Neighborhood & Option Buttons ---- */
+.neighborhoodGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.optionBtn {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.optionBtn:hover {
+  border-color: var(--color-primary-light);
+  color: var(--color-navy);
+}
+
+.optionBtnSelected {
+  composes: optionBtn;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+/* ---- Step 5: Tutorial ---- */
+.tutorialContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tutorialCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.tutorialItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  background-color: var(--color-surface);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+}
+
+.tutorialIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.tutorialText p {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.tutorialText strong {
+  color: var(--color-navy);
+  font-size: var(--text-base);
 }
 
 /* Social login buttons */

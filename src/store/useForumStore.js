@@ -1,79 +1,119 @@
 import { create } from 'zustand'
-
-const mockQuestions = [
-  {
-    id: 'q1',
-    author: 'Usuario Anónimo',
-    title: '¿Cómo empadronar a mi hijo recién nacido si me falta un papel del hospital?',
-    content: 'Fui al ayuntamiento y me dijeron que necesito el alta del hospital pero no la encuentro. ¿Hay alguna alternativa?',
-    category: 'Trámites',
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    answers: 3,
-    isValidated: true,
-    answersList: [
-      {
-        id: 'a1',
-        author: 'María C.',
-        role: 'Madre Tutora',
-        content: 'Puedes pedir un duplicado directamente en el mostrador del hospital donde diste a luz con tu DNI/NIE.',
-        timestamp: new Date(Date.now() - 1800000).toISOString(),
-        isValidated: true
-      }
-    ]
-  },
-  {
-    id: 'q2',
-    author: 'Lucía G.',
-    title: '¿Dónde puedo encontrar ropa de invierno talla 4 años gratis o muy barata?',
-    content: 'Este año mi niña ha crecido muchísimo y no nos llega para comprar abrigo nuevo.',
-    category: 'Ayuda Material',
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    answers: 0,
-    isValidated: false,
-    answersList: []
-  }
-]
+import { supabase } from '../lib/supabase'
 
 const useForumStore = create((set, get) => ({
-  questions: mockQuestions,
+  questions: [],
+  isLoading: false,
 
-  addQuestion: (title, content, category) => {
-    const newQuestion = {
-      id: `q${Date.now()}`,
-      author: 'Tú',
-      title,
-      content,
-      category,
-      timestamp: new Date().toISOString(),
-      answers: 0,
-      isValidated: false,
-      answersList: []
+  fetchQuestions: async () => {
+    set({ isLoading: true })
+    
+    // Fetch questions with author profile and all nested answers with their author profiles
+    const { data, error } = await supabase
+      .from('questions')
+      .select(`
+        id,
+        title,
+        content,
+        category,
+        is_validated,
+        created_at,
+        profiles ( name, role, avatar ),
+        answers (
+          id,
+          content,
+          is_validated,
+          created_at,
+          profiles ( name, role, avatar )
+        )
+      `)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error("Error fetching questions:", error)
+      set({ isLoading: false })
+      return
     }
-    set(state => ({
-      questions: [newQuestion, ...state.questions]
+
+    // Map to our frontend model
+    const mappedQuestions = data.map(q => ({
+      id: q.id,
+      author: q.profiles?.name || 'Usuario',
+      title: q.title,
+      content: q.content,
+      category: q.category,
+      timestamp: q.created_at,
+      answers: q.answers ? q.answers.length : 0,
+      isValidated: q.is_validated,
+      answersList: (q.answers || []).map(a => ({
+        id: a.id,
+        author: a.profiles?.name || 'Usuario',
+        role: a.profiles?.role === 'admin' ? 'Madre Tutora' : 'Usuario',
+        content: a.content,
+        timestamp: a.created_at,
+        isValidated: a.is_validated
+      })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }))
+
+    set({ questions: mappedQuestions, isLoading: false })
   },
 
-  addAnswer: (questionId, content) => {
-    const newAnswer = {
-      id: `a${Date.now()}`,
-      author: 'Tú',
-      role: 'Usuario',
-      content,
-      timestamp: new Date().toISOString(),
-      isValidated: false
+  addQuestion: async (title, content, category) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    const { error } = await supabase
+      .from('questions')
+      .insert([
+        { 
+          author_id: session.user.id,
+          title, 
+          content, 
+          category 
+        }
+      ])
+      
+    if (!error) {
+      get().fetchQuestions()
+    } else {
+      console.error("Error adding question:", error)
     }
-    set(state => ({
-      questions: state.questions.map(q => 
-        q.id === questionId 
-          ? { 
-              ...q, 
-              answers: q.answers + 1,
-              answersList: [...q.answersList, newAnswer] 
-            } 
-          : q
-      )
-    }))
+  },
+
+  addAnswer: async (questionId, content) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    const { error } = await supabase
+      .from('answers')
+      .insert([
+        {
+          question_id: questionId,
+          author_id: session.user.id,
+          content
+        }
+      ])
+
+    if (!error) {
+      get().fetchQuestions()
+    } else {
+      console.error("Error adding answer:", error)
+    }
+  },
+  
+  subscribeToChanges: () => {
+    const channel = supabase.channel('forum_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'questions' }, () => {
+        get().fetchQuestions()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'answers' }, () => {
+        get().fetchQuestions()
+      })
+      .subscribe()
+      
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }
 }))
 

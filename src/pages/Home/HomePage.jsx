@@ -60,6 +60,36 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── Sugerencias Inteligentes GNN ── */}
+      {!isGuest && (
+        <div className={styles.gnnSection}>
+          <h2 className={styles.sectionTitle}>✨ Sugerencias para Ti</h2>
+          <div className={styles.gnnCard}>
+            <div className={styles.gnnHeader}>
+              <div className={styles.gnnAvatar}>M</div>
+              <div className={styles.gnnInfo}>
+                <h4>Conecta con Marta</h4>
+                <p>Madre Mentora recomendada</p>
+              </div>
+            </div>
+            <p className={styles.gnnReason}>
+              Marta también vive en <strong>{user?.neighborhood || 'tu barrio'}</strong> y habla <strong>{user?.language || 'tu idioma'}</strong>. ¡Escríbele para empezar tu red de apoyo!
+            </p>
+            <button className={styles.gnnAction} onClick={() => navigate('/chat')}>
+              Saludar a Marta 👋
+            </button>
+          </div>
+          
+          <div className={styles.gnnCardSecondary}>
+            <div className={styles.gnnIcon}>📍</div>
+            <div className={styles.gnnInfoSec}>
+              <h4>Taller de Bienvenida</h4>
+              <p>Basado en tu situación, te sugerimos esta actividad comunitaria el Sábado.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.journeySection}>
         <h2 className={styles.sectionTitle}>El Mapa del Viaje</h2>
         <div className={styles.journeyMap}>

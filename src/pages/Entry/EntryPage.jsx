@@ -82,8 +82,8 @@ export default function EntryPage() {
   const { language, toggleLanguage } = useAppStore()
 
   /** Explorar sin registro → modo invitado */
-  const handleExploreAsGuest = () => {
-    loginAsGuest()
+  const handleExploreAsGuest = async () => {
+    await loginAsGuest()
     navigate('/')
   }
 
@@ -127,7 +127,7 @@ export default function EntryPage() {
 
         <button
           className={styles.btnSecondary}
-          onClick={() => navigate('/onboarding')}
+          onClick={() => navigate('/login')}
           aria-label="Iniciar sesión"
         >
           Iniciar sesión

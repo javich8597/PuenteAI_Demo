@@ -1,105 +1,154 @@
-/**
- * useChatStore.js
- * ─────────────────────────────────────────────
- * Store de mensajería para PuenteAI.
- * Gestiona conversaciones directas y grupales.
- */
-
 import { create } from 'zustand';
-import { mockConversations, mockMessages } from '../data/messages';
+import { supabase } from '../lib/supabase';
 
 const useChatStore = create((set, get) => ({
-  // ── Estado ──────────────────────────────
-
-  /** Lista de conversaciones (directas y de grupo) */
-  conversations: mockConversations,
-
-  /** ID de la conversación activa */
+  conversations: [],
   activeConversation: null,
+  messages: {},
+  isLoading: false,
 
-  /** Mapa: conversationId → array de mensajes */
-  messages: mockMessages,
+  fetchMessages: async () => {
+    set({ isLoading: true });
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      set({ isLoading: false });
+      return;
+    }
+    const myId = session.user.id;
 
-  // ── Acciones ────────────────────────────
+    // Fetch all messages where I am sender or receiver
+    const { data, error } = await supabase
+      .from('chat_messages')
+      .select(`
+        id,
+        content,
+        created_at,
+        sender_id,
+        receiver_id,
+        sender:profiles!chat_messages_sender_id_fkey(id, name, avatar),
+        receiver:profiles!chat_messages_receiver_id_fkey(id, name, avatar)
+      `)
+      .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
+      .order('created_at', { ascending: true });
 
-  /**
-   * Establece la conversación activa y la marca como leída.
-   * @param {string} id - ID de la conversación
-   */
-  setActiveConversation: (id) => {
-    set({ activeConversation: id });
-    // Marcar como leída automáticamente al abrir
-    get().markAsRead(id);
-  },
+    if (error) {
+      console.error('Error fetching messages:', error);
+      set({ isLoading: false });
+      return;
+    }
 
-  /**
-   * Envía un mensaje a una conversación.
-   * @param {string} convId - ID de la conversación
-   * @param {string} text - Texto del mensaje
-   */
-  sendMessage: (convId, text) => {
-    const newMessage = {
-      id: `msg-${Date.now()}`,
-      senderId: 'me',
-      senderName: 'Tú',
-      text,
-      timestamp: new Date().toISOString(),
-      isRead: true,
-      isOwn: true,
-    };
+    const conversationsMap = new Map();
+    const messagesMap = {};
 
-    set((state) => {
-      // Añadir mensaje al mapa
-      const convMessages = state.messages[convId] || [];
-      const updatedMessages = {
-        ...state.messages,
-        [convId]: [...convMessages, newMessage],
-      };
+    data.forEach(msg => {
+      const isOwn = msg.sender_id === myId;
+      const otherUser = isOwn ? msg.receiver : msg.sender;
+      const otherId = otherUser?.id;
 
-      // Actualizar último mensaje en la conversación
-      const updatedConversations = state.conversations.map((conv) =>
-        conv.id === convId
-          ? {
-              ...conv,
-              lastMessage: text,
-              lastMessageTime: newMessage.timestamp,
-            }
-          : conv
-      );
+      if (!otherId) return;
 
-      return {
-        messages: updatedMessages,
-        conversations: updatedConversations,
-      };
+      if (!messagesMap[otherId]) {
+        messagesMap[otherId] = [];
+      }
+
+      messagesMap[otherId].push({
+        id: msg.id,
+        senderId: isOwn ? 'me' : otherId,
+        senderName: isOwn ? 'Tú' : otherUser.name,
+        text: msg.content,
+        timestamp: msg.created_at,
+        isOwn,
+        isRead: true 
+      });
+
+      // Update conversation latest info
+      conversationsMap.set(otherId, {
+        id: otherId,
+        name: otherUser.name,
+        avatar: otherUser.avatar,
+        lastMessage: msg.content,
+        lastMessageTime: msg.created_at,
+        unread: 0,
+        isGroup: false,
+      });
+    });
+
+    // Add a hardcoded "Madre Tutora" conversation if empty for demo purposes
+    if (conversationsMap.size === 0) {
+      const dummyId = 'admin-001';
+      conversationsMap.set(dummyId, {
+        id: dummyId,
+        name: 'Marta (Madre Tutora)',
+        avatar: '👩',
+        lastMessage: '¡Hola! ¿En qué te puedo ayudar hoy?',
+        lastMessageTime: new Date().toISOString(),
+        unread: 1,
+        isGroup: false
+      });
+      messagesMap[dummyId] = [{
+        id: 'welcome',
+        senderId: dummyId,
+        senderName: 'Marta (Madre Tutora)',
+        text: '¡Hola! ¿En qué te puedo ayudar hoy?',
+        timestamp: new Date().toISOString(),
+        isOwn: false,
+        isRead: false
+      }];
+    }
+
+    set({
+      conversations: Array.from(conversationsMap.values()).sort((a,b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime)),
+      messages: messagesMap,
+      isLoading: false
     });
   },
 
-  /**
-   * Marca todos los mensajes de una conversación como leídos.
-   * @param {string} convId - ID de la conversación
-   */
+  setActiveConversation: (id) => {
+    set({ activeConversation: id });
+    get().markAsRead(id);
+  },
+
+  sendMessage: async (convId, text) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    const newMessage = {
+      sender_id: session.user.id,
+      receiver_id: convId,
+      content: text
+    };
+
+    const { error } = await supabase.from('chat_messages').insert([newMessage]);
+    if (!error) {
+      // Optimistic update
+      get().fetchMessages();
+    }
+  },
+
   markAsRead: (convId) =>
     set((state) => ({
       conversations: state.conversations.map((conv) =>
         conv.id === convId ? { ...conv, unread: 0 } : conv
-      ),
-      messages: {
-        ...state.messages,
-        [convId]: (state.messages[convId] || []).map((msg) => ({
-          ...msg,
-          isRead: true,
-        })),
-      },
+      )
     })),
 
-  /**
-   * Obtiene el número total de mensajes no leídos.
-   * @returns {number}
-   */
   getTotalUnread: () => {
     const { conversations } = get();
     return conversations.reduce((total, conv) => total + (conv.unread || 0), 0);
   },
+
+  subscribeToMessages: () => {
+    const channel = supabase.channel('chat_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => {
+        get().fetchMessages();
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    }
+  }
 }));
 
 export default useChatStore;

@@ -7,7 +7,7 @@ import styles from './RewardsPage.module.css'
 
 export default function RewardsPage() {
   const navigate = useNavigate()
-  const { seeds, plantSeed, createRequest } = useJardinStore()
+  const { plantSeed, createRequest, getSeeds } = useJardinStore()
   
   const [activeModal, setActiveModal] = useState(null) // 'need' or 'want'
   const [desc, setDesc] = useState('')
@@ -30,6 +30,8 @@ export default function RewardsPage() {
     }, 1500)
   }
 
+  const seedsCount = getSeeds()
+
   return (
     <motion.div 
       className={styles.page}
@@ -51,8 +53,8 @@ export default function RewardsPage() {
           <h3>Tu Jardín ha crecido:</h3>
           <div className={styles.seedCount}>
             <Coffee size={24} color="var(--color-primary)" />
-            <motion.span key={seeds} initial={{ scale: 1.5 }} animate={{ scale: 1 }}>
-              <strong>{seeds} Semillas</strong> plantadas (tiempo donado)
+            <motion.span key={seedsCount} initial={{ scale: 1.5 }} animate={{ scale: 1 }}>
+              <strong>{seedsCount} Semillas</strong> plantadas (tiempo donado)
             </motion.span>
           </div>
         </div>

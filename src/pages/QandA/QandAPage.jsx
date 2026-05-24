@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search, MessageSquare, ShieldCheck, HelpCircle, X } from 'lucide-react'
@@ -7,12 +7,18 @@ import styles from './QandAPage.module.css'
 
 export default function QandAPage() {
   const navigate = useNavigate()
-  const { questions, addQuestion } = useForumStore()
+  const { questions, addQuestion, fetchQuestions, subscribeToChanges } = useForumStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   
   const [newQTitle, setNewQTitle] = useState('')
   const [newQContent, setNewQContent] = useState('')
+
+  useEffect(() => {
+    fetchQuestions()
+    const unsubscribe = subscribeToChanges()
+    return () => unsubscribe()
+  }, [fetchQuestions, subscribeToChanges])
 
   const handleCreateQuestion = (e) => {
     e.preventDefault()
