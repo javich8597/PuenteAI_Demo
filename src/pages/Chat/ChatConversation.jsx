@@ -3,13 +3,15 @@ import { useNavigate, useParams } from 'react-router'
 import { motion } from 'motion/react'
 import { ChevronLeft, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Mic } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './ChatConversation.module.css'
 
 export default function ChatConversation() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { conversations, messages, sendMessage, setActiveConversation, fetchMessages, subscribeToMessages } = useChatStore()
-  
+  const { t } = useTranslation()
+
   const [inputText, setInputText] = useState('')
   const messagesEndRef = useRef(null)
 
@@ -55,7 +57,7 @@ export default function ChatConversation() {
           </div>
           <div className={styles.userInfo}>
             <h2 className={styles.userName}>{conversation.name}</h2>
-            <span className={styles.userStatus}>En línea</span>
+            <span className={styles.userStatus}>{t('chat.online')}</span>
           </div>
         </div>
         <div className={styles.headerRight}>
@@ -67,7 +69,7 @@ export default function ChatConversation() {
       <div className={styles.messagesContainer}>
         {currentMessages.length === 0 ? (
           <div className={styles.emptyState}>
-            Empieza la conversación con {conversation.name}
+            {t('chat.start_conversation', { name: conversation.name })}
           </div>
         ) : (
           currentMessages.map((msg) => (
@@ -88,7 +90,7 @@ export default function ChatConversation() {
       <form className={styles.inputForm} onSubmit={handleSend}>
         <input 
           type="text" 
-          placeholder="Escribe un mensaje..." 
+          placeholder={t('chat.type_message')}
           className={styles.textInput}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}

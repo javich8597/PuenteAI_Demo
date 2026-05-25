@@ -1,45 +1,15 @@
 /**
- * OnboardingPage.jsx — Registro progresivo en 3 pasos
- * ─────────────────────────────────────────────────────
- * Paso 1: Nombre  |  Paso 2: Tiempo en BCN  |  Paso 3: Intereses
- * Diseñado para completarse en menos de 2 minutos.
+ * OnboardingPage.jsx — Registro progresivo con cuestionario de 6 preguntas.
  */
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'motion/react'
-import { ArrowLeft, Check } from 'lucide-react'
+import { ArrowLeft, Sparkles, Heart } from 'lucide-react'
 import useAuthStore from '../../store/useAuthStore'
-import { categories } from '../../data/categories'
+import { useTranslation } from '../../hooks/useTranslation'
+import { calculatePriorities } from '../../utils/scoring'
 import styles from './OnboardingPage.module.css'
-
-/* ─── Opciones de tiempo en Barcelona (Situación) ─── */
-const timeOptions = [
-  { id: 'less3m', label: 'Recién llegada', emoji: '🌱' },
-  { id: '3to12m', label: 'Buscando estabilidad', emoji: '🌿' },
-  { id: '1to3y', label: 'Asentándome', emoji: '🌳' },
-  { id: 'more3y', label: 'Establecida', emoji: '🌲' },
-]
-
-/* ─── Opciones de Barrios ─── */
-const neighborhoodOptions = [
-  'Ciutat Vella', 'Eixample', 'Sants-Montjuïc', 'Les Corts', 
-  'Sarrià-Sant Gervasi', 'Gràcia', 'Horta-Guinardó', 
-  'Nou Barris', 'Sant Andreu', 'Sant Martí', 'Fuera de Barcelona'
-]
-
-/* ─── Opciones de Idiomas ─── */
-const languageOptions = ['Español', 'Català', 'English', 'Français', 'العربية', 'Otra']
-
-/* ─── Iconos de categoría como componente ─── */
-const categoryIcons = {
-  legal: '⚖️',
-  health: '❤️',
-  education: '🎓',
-  work: '💼',
-  community: '👥',
-  housing: '🏠',
-}
 
 /* ─── Animación de los pasos ─── */
 const stepVariants = {
@@ -59,27 +29,33 @@ const stepVariants = {
   }),
 }
 
-/* ══════════════════════════════════════════════
-   Componente Principal
-   ══════════════════════════════════════════════ */
 export default function OnboardingPage() {
   const navigate = useNavigate()
-  const login = useAuthStore((s) => s.login)
+  const setOnboardingData = useAuthStore((s) => s.setOnboardingData)
+  const { t } = useTranslation()
 
   // Estado del onboarding
   const [step, setStep] = useState(1)
   const [direction, setDirection] = useState(1) // 1 = avanzar, -1 = retroceder
+
+  // Respuestas del formulario
+  const [answers, setAnswers] = useState({
+    q1: null,
+    q2: null,
+    q3: null,
+    q4: null,
+    q5: null,
+    q6: null
+  })
+
+  // Datos básicos (último paso)
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [neighborhood, setNeighborhood] = useState('')
-  const [language, setLanguage] = useState('')
-  const [timeInBarcelona, setTimeInBarcelona] = useState(null)
-  const [selectedCategories, setSelectedCategories] = useState([])
 
-  const totalSteps = 5
+  const totalSteps = 8
   const progressPercent = (step / totalSteps) * 100
 
   /* ── Navegación entre pasos ── */
@@ -99,39 +75,33 @@ export default function OnboardingPage() {
     }
   }
 
-  /* ── Toggle selección de categoría ── */
-  const toggleCategory = (id) => {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-    )
-  }
-
-  /* ── Login social simulado ── */
-  const handleSocialLogin = (provider) => {
-    login({
-      id: 'user-social-' + Date.now(),
-      name: 'Amiga',
-      avatar: null,
-      timeInBarcelona: '',
-      categories: [],
-      points: 0,
-      badges: [],
-    })
-    navigate('/')
+  const handleAnswer = (question, answer) => {
+    setAnswers(prev => ({ ...prev, [question]: answer }))
+    // Autoadvance after brief delay for better UX
+    setTimeout(() => {
+      goNext()
+    }, 400)
   }
 
   /* ── Finalizar onboarding (Supabase) ── */
   const handleFinish = async () => {
     try {
+      // Calcular prioridades basadas en las respuestas
+      const prioritizedCategories = calculatePriorities(answers)
+      setOnboardingData(answers, prioritizedCategories)
+
       const userEmail = email || `${name.toLowerCase().replace(/\s+/g, '')}${Date.now()}@demo.com`;
       const userPass = password || 'puenteDemo123';
       
-      await useAuthStore.getState().signUp(userEmail, userPass, name || 'Amiga', surname || '', phone || '', neighborhood || '', language || '', timeInBarcelona || '');
+      await useAuthStore.getState().signUp(userEmail, userPass, name || 'Amiga', surname || '', phone || '', '', '', '');
       
       navigate('/');
     } catch (error) {
       console.warn('Supabase error, fallback to local session for demo:', error.message);
-      // Forzar sesión local para que la demo no se rompa por límites de Supabase
+      
+      const prioritizedCategories = calculatePriorities(answers)
+      setOnboardingData(answers, prioritizedCategories)
+
       useAuthStore.setState({
         isAuthenticated: true,
         isLoading: false,
@@ -150,16 +120,47 @@ export default function OnboardingPage() {
 
   /* ── Validar si puede avanzar ── */
   const canContinue = () => {
-    if (step === 1) {
+    if (step === 8) {
       return name.trim().length > 0 && 
-             surname.trim().length > 0 && 
-             phone.trim().length >= 9 && 
              email.includes('@') && 
              password.length >= 6
     }
-    // Pasos 2, 3, 4 y 5 son opcionales o informativos, siempre pueden avanzar
+    // Para las preguntas, requerimos que hayan seleccionado algo, 
+    // pero también tienen el botón explícito de "saltar" o "prefiero no contestar"
+    if (step >= 2 && step <= 7) {
+      const qKey = `q${step - 1}`;
+      return answers[qKey] !== null;
+    }
     return true
   }
+
+  // Opciones para las preguntas
+  const questions = [
+    {
+      id: 'q1',
+      options: ['q1_a1', 'q1_a2', 'q1_a3', 'q1_a4']
+    },
+    {
+      id: 'q2',
+      options: ['q2_a1', 'q2_a2', 'q2_a3', 'q2_a4']
+    },
+    {
+      id: 'q3',
+      options: ['q3_a1', 'q3_a2', 'q3_a3', 'q3_a4']
+    },
+    {
+      id: 'q4',
+      options: ['q4_a1', 'q4_a2', 'q4_a3', 'q4_a4']
+    },
+    {
+      id: 'q5',
+      options: ['q5_a1', 'q5_a2', 'q5_a3', 'q5_a4']
+    },
+    {
+      id: 'q6',
+      options: ['q6_a1', 'q6_a2', 'q6_a3', 'q6_a4', 'q6_a5', 'q6_a6']
+    }
+  ]
 
   return (
     <motion.div
@@ -187,7 +188,7 @@ export default function OnboardingPage() {
             />
           </div>
           <span className={styles.progressLabel}>
-            Paso {step} de {totalSteps}
+            {t('onboarding.step_of', { step, total: totalSteps })}
           </span>
         </div>
       </div>
@@ -203,18 +204,64 @@ export default function OnboardingPage() {
           animate="center"
           exit="exit"
         >
-          {/* ────── PASO 1: Datos Personales ────── */}
+          {/* ────── PASO 1: Bienvenida ────── */}
           {step === 1 && (
+            <div className={styles.welcomeContainer}>
+              <div className={styles.welcomeIconWrapper}>
+                <Sparkles size={48} strokeWidth={1.5} />
+              </div>
+              <h1 className={styles.stepHeading}>
+                {t('onboarding.welcome')}
+              </h1>
+              <div className={styles.welcomeMessage}>
+                <p>{t('onboarding.welcome_msg')}</p>
+              </div>
+            </div>
+          )}
+
+          {/* ────── PASOS 2 a 7: Cuestionario ────── */}
+          {step >= 2 && step <= 7 && (
             <div className={styles.formContainer}>
               <h1 className={styles.stepHeading}>
-                Tus Datos Básicos
+                {t(`onboarding.q${step - 1}`)}
+              </h1>
+              
+              <div className={styles.optionsList}>
+                {questions[step - 2].options.map(opt => (
+                  <motion.button
+                    key={opt}
+                    className={answers[`q${step - 1}`] === opt ? styles.optionBtnSelected : styles.optionBtn}
+                    onClick={() => handleAnswer(`q${step - 1}`, opt)}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {t(`onboarding.${opt}`)}
+                  </motion.button>
+                ))}
+                
+                {/* Opción obligatoria: Prefiero no contestar */}
+                <motion.button
+                  className={answers[`q${step - 1}`] === 'skip' ? styles.optionBtnSelected : styles.optionBtnSkip}
+                  onClick={() => handleAnswer(`q${step - 1}`, 'skip')}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {t('onboarding.prefer_not')}
+                </motion.button>
+              </div>
+            </div>
+          )}
+
+          {/* ────── PASO 8: Registro final ────── */}
+          {step === 8 && (
+            <div className={styles.formContainer}>
+              <h1 className={styles.stepHeading}>
+                {t('onboarding.basic_data')}
               </h1>
               <p className={styles.stepSubtext}>
-                Para proteger la comunidad, necesitamos validar tu identidad
+                {t('onboarding.basic_desc')}
               </p>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Nombre</label>
+                <label className={styles.inputLabel}>{t('onboarding.name')}</label>
                 <input
                   type="text"
                   className={styles.nameInput}
@@ -226,29 +273,29 @@ export default function OnboardingPage() {
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Apellidos</label>
+                <label className={styles.inputLabel}>{t('onboarding.surname')}</label>
                 <input
                   type="text"
                   className={styles.nameInput}
-                  placeholder="Ej: García López"
+                  placeholder="Opcional"
                   value={surname}
                   onChange={(e) => setSurname(e.target.value)}
                 />
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Teléfono Móvil</label>
+                <label className={styles.inputLabel}>{t('onboarding.phone')}</label>
                 <input
                   type="tel"
                   className={styles.nameInput}
-                  placeholder="Ej: 600 123 456"
+                  placeholder="Opcional"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Correo Electrónico</label>
+                <label className={styles.inputLabel}>{t('onboarding.email')}</label>
                 <input
                   type="email"
                   className={styles.nameInput}
@@ -259,190 +306,14 @@ export default function OnboardingPage() {
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Contraseña</label>
+                <label className={styles.inputLabel}>{t('onboarding.password')}</label>
                 <input
                   type="password"
                   className={styles.nameInput}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="***"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </div>
-
-            </div>
-          )}
-
-          {/* ────── PASO 2: Barrio (Opcional) ────── */}
-          {step === 2 && (
-            <div className={styles.formContainer}>
-              <h1 className={styles.stepHeading}>
-                ¿En qué zona de Barcelona vives?
-              </h1>
-              <p className={styles.stepSubtext}>
-                Esto nos permite conectarte con recursos y Madres Mentoras cerca de ti. (Opcional)
-              </p>
-
-              <div className={styles.neighborhoodGrid}>
-                {neighborhoodOptions.map((nb) => (
-                  <motion.button
-                    key={nb}
-                    className={
-                      neighborhood === nb ? styles.optionBtnSelected : styles.optionBtn
-                    }
-                    onClick={() => setNeighborhood(nb)}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {nb}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ────── PASO 3: Idioma y Situación (Opcional) ────── */}
-          {step === 3 && (
-            <div className={styles.formContainer}>
-              <h1 className={styles.stepHeading}>
-                Conozcámonos un poco más
-              </h1>
-              <p className={styles.stepSubtext}>
-                Selecciona tu idioma preferido y tu situación actual. (Opcional)
-              </p>
-
-              <label className={styles.inputLabel} style={{ marginTop: '1rem' }}>Idioma preferido</label>
-              <div className={styles.neighborhoodGrid}>
-                {languageOptions.map((lang) => (
-                  <motion.button
-                    key={lang}
-                    className={
-                      language === lang ? styles.optionBtnSelected : styles.optionBtn
-                    }
-                    onClick={() => setLanguage(lang)}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {lang}
-                  </motion.button>
-                ))}
-              </div>
-
-              <label className={styles.inputLabel} style={{ marginTop: '1.5rem' }}>Tu situación actual en Barcelona</label>
-              <div className={styles.timeCards}>
-                {timeOptions.map((opt) => (
-                  <motion.div
-                    key={opt.id}
-                    className={
-                      timeInBarcelona === opt.id
-                        ? styles.timeCardSelected
-                        : styles.timeCard
-                    }
-                    onClick={() => setTimeInBarcelona(opt.id)}
-                    whileTap={{ scale: 0.97 }}
-                    role="radio"
-                    aria-checked={timeInBarcelona === opt.id}
-                    tabIndex={0}
-                    onKeyDown={(e) =>
-                      e.key === 'Enter' && setTimeInBarcelona(opt.id)
-                    }
-                  >
-                    <span className={styles.timeEmoji}>{opt.emoji}</span>
-                    <span className={styles.timeLabel}>{opt.label}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ────── PASO 4: Intereses (Opcional) ────── */}
-          {step === 4 && (
-            <>
-              <h1 className={styles.stepHeading}>
-                ¿Qué necesitas ahora mismo?
-              </h1>
-              <p className={styles.stepSubtext}>
-                Puedes seleccionar varias opciones. Puedes cambiar esto después.
-              </p>
-
-              <div className={styles.categoryGrid}>
-                {categories.map((cat) => {
-                  const isSelected = selectedCategories.includes(cat.id)
-                  return (
-                    <motion.div
-                      key={cat.id}
-                      className={
-                        isSelected
-                          ? styles.categoryCardSelected
-                          : styles.categoryCard
-                      }
-                      onClick={() => toggleCategory(cat.id)}
-                      whileTap={{ scale: 0.95 }}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={0}
-                      onKeyDown={(e) =>
-                        e.key === 'Enter' && toggleCategory(cat.id)
-                      }
-                    >
-                      {isSelected && (
-                        <motion.div
-                          className={styles.checkMark}
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                        >
-                          <Check size={14} strokeWidth={3} />
-                        </motion.div>
-                      )}
-                      <div
-                        className={styles.categoryIcon}
-                        style={{ backgroundColor: cat.color + '18' }}
-                      >
-                        <span>{categoryIcons[cat.id] || '📌'}</span>
-                      </div>
-                      <span className={styles.categoryName}>{cat.name}</span>
-                      <span className={styles.categoryDesc}>
-                        {cat.description}
-                      </span>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </>
-          )}
-
-          {/* ────── PASO 5: Microtutorial ────── */}
-          {step === 5 && (
-            <div className={styles.tutorialContainer}>
-              <h1 className={styles.stepHeading}>
-                ¡Bienvenida a PuenteAI! 🎉
-              </h1>
-              <p className={styles.stepSubtext}>
-                Antes de empezar, aquí tienes una guía rápida de cómo podemos ayudarte.
-              </p>
-              
-              <div className={styles.tutorialCard}>
-                <div className={styles.tutorialItem}>
-                  <div className={styles.tutorialIcon}>🤝</div>
-                  <div className={styles.tutorialText}>
-                    <strong>Conexión con Madres Mentoras</strong>
-                    <p>La inteligencia artificial te asignará una madre experimentada en tu barrio que habla tu idioma.</p>
-                  </div>
-                </div>
-                
-                <div className={styles.tutorialItem}>
-                  <div className={styles.tutorialIcon}>💬</div>
-                  <div className={styles.tutorialText}>
-                    <strong>Foro de Dudas Seguras</strong>
-                    <p>Haz preguntas y recibe respuestas validadas por expertas en trámites, salud y educación.</p>
-                  </div>
-                </div>
-
-                <div className={styles.tutorialItem}>
-                  <div className={styles.tutorialIcon}>🆘</div>
-                  <div className={styles.tutorialText}>
-                    <strong>Botón de Emergencias</strong>
-                    <p>En caso de urgencia, tendrás acceso rápido a los servicios de emergencia de Barcelona con un toque.</p>
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -455,24 +326,20 @@ export default function OnboardingPage() {
             <motion.button
               className={styles.continueBtn}
               onClick={goNext}
-              disabled={!canContinue()}
+              disabled={step === 1 ? false : !canContinue()}
               whileTap={{ scale: 0.97 }}
             >
-              Continuar
+              {t('onboarding.btn_continue')}
             </motion.button>
-            {step > 1 && (
-              <button className={styles.skipBtn} onClick={goNext}>
-                Saltar este paso
-              </button>
-            )}
           </div>
         ) : (
           <motion.button
             className={styles.continueBtnFinal}
             onClick={handleFinish}
+            disabled={!canContinue()}
             whileTap={{ scale: 0.97 }}
           >
-            ✨ Empezar mi camino
+            {t('onboarding.btn_start')}
           </motion.button>
         )}
       </div>

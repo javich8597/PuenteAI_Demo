@@ -1,13 +1,13 @@
 /* ============================================================
-   OnboardingPage.module.css — Registro progresivo en 3 pasos
-   Diseño simple, tarjetas grandes, input accesible
+   OnboardingPage.module.css — Registro progresivo
+   Diseño acogedor, cálido, amigable
    ============================================================ */
 
 .page {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg);
+  background: linear-gradient(180deg, #FDF7F5 0%, #FFFFFF 100%);
   padding: var(--space-6);
   padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
 }
@@ -16,39 +16,41 @@
 .header {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
 }
 
 .backButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-full);
-  background-color: var(--color-surface);
+  background-color: white;
   color: var(--color-navy);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
   cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all var(--duration-fast) var(--ease-out);
   flex-shrink: 0;
 }
 
 .backButton:hover {
   background-color: var(--color-surface-hover);
+  transform: translateY(-1px);
 }
 
 .progressContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .progressBar {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background-color: var(--color-border-light);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -64,8 +66,10 @@
 .progressLabel {
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-bold);
   text-align: right;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 /* ---- Content Area ---- */
@@ -73,36 +77,149 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .stepHeading {
   font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  font-weight: var(--weight-extrabold);
+  font-size: 32px;
+  font-weight: 800;
   color: var(--color-navy);
   line-height: 1.2;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.5px;
 }
 
 .stepSubtext {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-8);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* ---- Step 1: Form Inputs ---- */
+/* ---- Welcome Message ---- */
+.welcomeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.welcomeIconWrapper {
+  width: 96px;
+  height: 96px;
+  background: linear-gradient(135deg, rgba(224, 122, 95, 0.2), rgba(242, 204, 143, 0.2));
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  transform: rotate(-5deg);
+  box-shadow: 0 8px 24px rgba(224, 122, 95, 0.15);
+}
+
+.welcomeMessage {
+  font-size: var(--text-base);
+  color: var(--color-navy);
+  line-height: 1.6;
+  background-color: white;
+  padding: var(--space-6);
+  border-radius: 24px;
+  border: 1px solid rgba(224, 122, 95, 0.1);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.04);
+  position: relative;
+}
+
+/* Una flechita pequeña para el globo de diálogo de Musa (opcional visual) */
+.welcomeMessage::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 12px 12px 12px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+
+/* ---- Form / Questions ---- */
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  margin-top: var(--space-2);
+  gap: var(--space-2);
+  margin-top: 0;
+  text-align: left;
 }
 
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.optionBtn {
+  padding: var(--space-5);
+  background-color: white;
+  border: 2px solid var(--color-border-light);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-navy);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--duration-normal) cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.optionBtn:hover {
+  border-color: var(--color-primary-light);
+  background-color: #FFFAF8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(224, 122, 95, 0.08);
+}
+
+.optionBtnSelected {
+  composes: optionBtn;
+  background-color: rgba(224, 122, 95, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-navy);
+  font-weight: var(--weight-bold);
+  box-shadow: 0 6px 16px rgba(224, 122, 95, 0.15);
+  transform: scale(1.02);
+}
+
+.optionBtnSkip {
+  padding: var(--space-4);
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  text-align: center;
+  transition: color var(--duration-fast) var(--ease-out);
+  margin-top: var(--space-4);
+  letter-spacing: 0.3px;
+}
+
+.optionBtnSkip:hover {
+  color: var(--color-text-secondary);
+}
+
+/* ---- Input Data ---- */
 .inputGroup {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .inputLabel {
@@ -110,22 +227,23 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   color: var(--color-navy);
+  margin-left: var(--space-2);
 }
 
 .nameInput {
   width: 100%;
-  height: 56px;
+  height: 60px;
   padding: 0 var(--space-5);
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   font-family: var(--font-body);
   font-weight: var(--weight-medium);
   color: var(--color-navy);
-  background-color: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  background-color: white;
+  border: 2px solid var(--color-border-light);
+  border-radius: 20px;
   outline: none;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 
 .nameInput::placeholder {
@@ -136,264 +254,13 @@
 .nameInput:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.12);
-}
-
-.inputHint {
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  margin-top: var(--space-2);
-}
-
-/* skip button */
-.skipBtn {
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  text-decoration: underline;
-  cursor: pointer;
-  padding: var(--space-2);
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.skipBtn:hover {
-  color: var(--color-navy);
-}
-
-/* ---- Step 2: Neighborhood & Option Buttons ---- */
-.neighborhoodGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-}
-
-.optionBtn {
-  padding: var(--space-3) var(--space-4);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-}
-
-.optionBtn:hover {
-  border-color: var(--color-primary-light);
-  color: var(--color-navy);
-}
-
-.optionBtnSelected {
-  composes: optionBtn;
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
-}
-
-/* ---- Step 5: Tutorial ---- */
-.tutorialContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.tutorialCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-}
-
-.tutorialItem {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-  background-color: var(--color-surface);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-light);
-}
-
-.tutorialIcon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.tutorialText p {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  margin-top: var(--space-1);
-}
-
-.tutorialText strong {
-  color: var(--color-navy);
-  font-size: var(--text-base);
-}
-
-/* Social login buttons */
-.socialSection {
-  margin-top: var(--space-8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.socialLabel {
-  font-size: var(--text-sm);
-  color: var(--color-text-tertiary);
-}
-
-.socialButtons {
-  display: flex;
-  gap: var(--space-3);
-}
-
-.socialBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  cursor: pointer;
-  font-size: var(--text-xl);
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.socialBtn:hover {
-  border-color: var(--color-primary-light);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ---- Step 2: Time Selection Cards ---- */
-.timeCards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.timeCard {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-5);
-  background-color: var(--color-surface);
-  border: 2px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              background-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.timeCard:hover {
-  border-color: var(--color-primary-light);
-  background-color: var(--color-surface-hover);
-}
-
-.timeCardSelected {
-  composes: timeCard;
-  border-color: var(--color-primary);
-  background-color: rgba(224, 122, 95, 0.04);
-  box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.1);
-}
-
-.timeEmoji {
-  font-size: 2rem;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.timeLabel {
-  font-family: var(--font-heading);
-  font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
-  color: var(--color-navy);
-}
-
-/* ---- Step 3: Category Cards Grid ---- */
-.categoryGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-}
-
-.categoryCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-5) var(--space-3);
-  background-color: var(--color-surface);
-  border: 2px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  text-align: center;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              background-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
-  position: relative;
-}
-
-.categoryCard:hover {
-  border-color: var(--color-primary-light);
-  background-color: var(--color-surface-hover);
-}
-
-.categoryCardSelected {
-  composes: categoryCard;
-  border-color: var(--color-primary);
-  background-color: rgba(224, 122, 95, 0.04);
-}
-
-.categoryIcon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  font-size: var(--text-xl);
-}
-
-.categoryName {
-  font-family: var(--font-heading);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  color: var(--color-navy);
-}
-
-.categoryDesc {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  line-height: 1.3;
-}
-
-.checkMark {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-primary);
-  border-radius: var(--radius-full);
-  color: white;
+  transform: translateY(-1px);
 }
 
 /* ---- Bottom Action ---- */
 .bottomAction {
   margin-top: auto;
-  padding-top: var(--space-6);
+  padding-top: var(--space-8);
 }
 
 .continueBtn {
@@ -402,26 +269,26 @@
   justify-content: center;
   gap: var(--space-2);
   width: 100%;
-  height: 56px;
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
+  height: 64px;
+  background-color: var(--color-navy);
+  color: white;
   font-family: var(--font-heading);
   font-size: var(--text-lg);
   font-weight: var(--weight-bold);
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: 24px;
   cursor: pointer;
-  box-shadow: var(--shadow-glow-primary);
-  transition: transform var(--duration-fast) var(--ease-out),
-              opacity var(--duration-fast) var(--ease-out);
+  box-shadow: 0 12px 24px rgba(61, 64, 91, 0.2);
+  transition: all var(--duration-normal) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .continueBtn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(61, 64, 91, 0.3);
 }
 
 .continueBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
@@ -430,5 +297,9 @@
 .continueBtnFinal {
   composes: continueBtn;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  box-shadow: var(--shadow-glow-secondary);
+  box-shadow: 0 12px 24px rgba(224, 122, 95, 0.3);
+}
+
+.continueBtnFinal:hover {
+  box-shadow: 0 16px 32px rgba(224, 122, 95, 0.4);
 }

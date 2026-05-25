@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
-import { Search, MapPin, Users, ChevronRight, FileText, Heart, GraduationCap, Briefcase, Home, ShieldCheck, HelpCircle } from 'lucide-react'
+import { Search, MapPin, Users, ChevronRight, FileText, Heart, GraduationCap, Briefcase, Home, ShieldCheck, HelpCircle, Globe, Sparkles } from 'lucide-react'
 import categories from '../../data/categories'
+import { useTranslation } from '../../hooks/useTranslation'
+import useAuthStore from '../../store/useAuthStore'
 import styles from './ExplorePage.module.css'
 
 const categoryIconMap = {
@@ -12,6 +14,8 @@ const categoryIconMap = {
   Briefcase,
   Users,
   Home,
+  ShieldCheck,
+  Globe
 }
 
 const mockPeople = [
@@ -23,6 +27,41 @@ const mockPeople = [
 export default function ExplorePage() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
+  const { t } = useTranslation()
+  const prioritizedCategories = useAuthStore(s => s.prioritizedCategories) || []
+
+  // Filtrar y ordenar categorías
+  const filteredCategories = useMemo(() => {
+    let cats = categories.filter(c => 
+      t(`categories.${c.id}.name`).toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    // Si hay prioridades (del Onboarding), ordenarlas primero
+    if (prioritizedCategories.length > 0) {
+      cats.sort((a, b) => {
+        const indexA = prioritizedCategories.indexOf(a.id)
+        const indexB = prioritizedCategories.indexOf(b.id)
+        
+        // Si ambos están en la lista de prioridad, el menor índice va primero
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB
+        // Si solo A está, va primero
+        if (indexA !== -1) return -1
+        // Si solo B está, va primero
+        if (indexB !== -1) return 1
+        // Si ninguno está, mantener orden original (o por id)
+        return 0
+      })
+    }
+
+    return cats
+  }, [searchQuery, prioritizedCategories, t])
+
+  const filteredPeople = mockPeople.filter(p => {
+    const translatedRole = p.isTutor ? t('role.tutor') : t('role.newcomer')
+    return p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.neighborhood.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      translatedRole.toLowerCase().includes(searchQuery.toLowerCase())
+  })
 
   return (
     <motion.div 
@@ -32,15 +71,15 @@ export default function ExplorePage() {
       transition={{ duration: 0.3 }}
     >
       <header className={styles.header}>
-        <h1 className={styles.title}>Explorar</h1>
-        <p className={styles.subtitle}>Encuentra recursos y personas cerca de ti</p>
+        <h1 className={styles.title}>{t('explore.title')}</h1>
+        <p className={styles.subtitle}>{t('explore.subtitle')}</p>
       </header>
 
       <div className={styles.searchContainer}>
         <Search className={styles.searchIcon} size={20} />
         <input 
           type="text" 
-          placeholder="Buscar servicios, grupos o dudas..." 
+          placeholder={t('explore.search_placeholder')}
           className={styles.searchInput}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -49,7 +88,7 @@ export default function ExplorePage() {
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Foro de Dudas</h2>
+          <h2 className={styles.sectionTitle}>{t('explore.forum_title')}</h2>
         </div>
         <motion.button 
           className={styles.forumBanner}
@@ -60,44 +99,55 @@ export default function ExplorePage() {
             <HelpCircle size={28} color="var(--color-primary)" />
           </div>
           <div className={styles.forumBannerText}>
-            <h3>¿Tienes preguntas?</h3>
-            <p>Pregunta a la comunidad y busca respuestas validadas por MUSA.</p>
+            <h3>{t('explore.forum_ask')}</h3>
+            <p>{t('explore.forum_desc')}</p>
           </div>
           <ChevronRight size={24} color="var(--color-text-tertiary)" />
         </motion.button>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Categorías de Ayuda</h2>
-        <div className={styles.grid}>
-          {categories.map(cat => {
-            const Icon = categoryIconMap[cat.icon] || Users
-            return (
-              <motion.button 
-                key={cat.id} 
-                className={styles.categoryCard}
-                onClick={() => navigate(`/categories/${cat.id}`)}
-                whileTap={{ scale: 0.95 }}
-                style={{ '--cat-color': cat.color }}
-              >
-                <div className={styles.iconWrapper} style={{ backgroundColor: `${cat.color}15` }}>
-                  <Icon color={cat.color} size={24} />
-                </div>
-                <span className={styles.categoryName}>{cat.name}</span>
-              </motion.button>
-            )
-          })}
-        </div>
-      </section>
+      {filteredCategories.length > 0 && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>{t('explore.categories_title')}</h2>
+          <div className={styles.grid}>
+            {filteredCategories.map(cat => {
+              const Icon = categoryIconMap[cat.icon] || Users
+              const isPrioritized = prioritizedCategories.length > 0 && 
+                                    (prioritizedCategories[0] === cat.id || prioritizedCategories[1] === cat.id)
+              
+              return (
+                <motion.button 
+                  key={cat.id} 
+                  className={`${styles.categoryCard} ${isPrioritized ? styles.categoryCardPrioritized : ''}`}
+                  onClick={() => navigate(`/categories/${cat.id}`)}
+                  whileTap={{ scale: 0.95 }}
+                  style={{ '--cat-color': cat.color }}
+                >
+                  {isPrioritized && (
+                    <div className={styles.priorityBadge}>
+                      <Sparkles size={12} />
+                    </div>
+                  )}
+                  <div className={styles.iconWrapper} style={{ backgroundColor: `${cat.color}15` }}>
+                    <Icon color={cat.color} size={24} />
+                  </div>
+                  <span className={styles.categoryName}>{t(`categories.${cat.id}.name`)}</span>
+                </motion.button>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Madres cerca de ti</h2>
-          <button className={styles.seeAllBtn} onClick={() => navigate('/groups')}>Ver todas</button>
-        </div>
-        
-        <div className={styles.list}>
-          {mockPeople.map(person => (
+      {filteredPeople.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{t('explore.mothers_near')}</h2>
+            <button className={styles.seeAllBtn} onClick={() => navigate('/groups')}>{t('explore.see_all')}</button>
+          </div>
+          
+          <div className={styles.list}>
+            {filteredPeople.map(person => (
             <div key={person.id} className={styles.personCard}>
               <div className={styles.avatar}>
                 {person.name.charAt(0)}
@@ -111,17 +161,18 @@ export default function ExplorePage() {
                   <span className={styles.dot}>•</span>
                   <span className={`${styles.metaItem} ${person.isTutor ? styles.tutorRole : ''}`}>
                     {person.isTutor && <ShieldCheck size={12} color="var(--color-primary)" />}
-                    {person.role}
+                    {person.isTutor ? t('role.tutor') : t('role.newcomer')}
                   </span>
                 </div>
               </div>
               <button className={styles.connectBtn} onClick={() => navigate('/chat/new')}>
-                Conectar
+                {t('explore.connect')}
               </button>
             </div>
           ))}
         </div>
       </section>
+      )}
 
     </motion.div>
   )

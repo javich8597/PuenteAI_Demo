@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
@@ -8,11 +8,23 @@ import styles from './LoginPage.module.css'
 export default function LoginPage() {
   const navigate = useNavigate()
   const signIn = useAuthStore((s) => s.signIn)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isAdmin = useAuthStore((s) => s.isAdmin)
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (isAdmin) {
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
+    }
+  }, [isAuthenticated, isAdmin, navigate])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -20,23 +32,31 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await signIn(email, password)
-      navigate('/')
+      // La navegación ahora la maneja el useEffect al cambiar isAuthenticated
     } catch (err) {
       console.warn('Supabase login failed, fallback to local session for demo:', err.message);
+      
+      const cleanEmail = email.trim().toLowerCase();
+      const isMarta = cleanEmail === 'marta@puente.ai' && password === 'puente123'
+      const isAdminDemo = cleanEmail === 'admin@demo.com' && password === 'admin123'
+      const isAnyAdmin = isMarta || isAdminDemo
+      
       // Forzar sesión local para la demo si las credenciales fallan o el usuario es falso
       useAuthStore.setState({
         isAuthenticated: true,
+        isGuest: false,
         isLoading: false,
         user: {
-          id: 'demo-login-' + Date.now(),
+          id: isAnyAdmin ? (isMarta ? 'admin-001' : 'admin-002') : 'demo-login-' + Date.now(),
           email: email,
-          name: email.split('@')[0] || 'Usuaria',
-          avatar: email ? email.charAt(0).toUpperCase() : '👤',
-          role: 'user',
-          seeds: 0
-        }
+          name: isAnyAdmin ? (isMarta ? 'Marta' : 'Admin') : (email.split('@')[0] || 'Usuaria'),
+          avatar: isAnyAdmin ? (isMarta ? 'Ⓜ️' : '👑') : (email ? email.charAt(0).toUpperCase() : '👤'),
+          role: isAnyAdmin ? 'admin' : 'user',
+          seeds: isAnyAdmin ? (isMarta ? 12 : 99) : 0
+        },
+        isAdmin: isAnyAdmin
       });
-      navigate('/')
+      // Navegación automática por useEffect
     } finally {
       setLoading(false)
     }

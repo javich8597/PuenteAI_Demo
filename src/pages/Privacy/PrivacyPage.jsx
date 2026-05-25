@@ -4,12 +4,14 @@ import { motion } from 'motion/react'
 import { Shield, EyeOff, UserX, Database, ChevronLeft, AlertTriangle } from 'lucide-react'
 import Switch from '../../components/ui/Switch'
 import useAuthStore from '../../store/useAuthStore'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './PrivacyPage.module.css'
 
 export default function PrivacyPage() {
   const navigate = useNavigate()
-  const { user, logout, isGuest } = useAuthStore()
-  
+  const { user, logout, isGuest, isAdmin } = useAuthStore()
+  const { t } = useTranslation()
+
   // Local state for toggles (mocking real privacy settings)
   const [incognito, setIncognito] = useState(isGuest)
   const [hideLocation, setHideLocation] = useState(false)
@@ -33,18 +35,18 @@ export default function PrivacyPage() {
         <div className={styles.headerIcon}>
           <Shield size={32} color="var(--color-secondary)" />
         </div>
-        <h1 className={styles.title}>Privacidad y Seguridad</h1>
+        <h1 className={styles.title}>{t('privacy.title')}</h1>
         <p className={styles.subtitle}>
-          Tú controlas quién ve qué. PuenteAI está diseñado para proteger tu identidad.
+          {t('privacy.subtitle')}
         </p>
       </header>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Modo Incógnito</h2>
+        <h2 className={styles.sectionTitle}>{t('privacy.incognito_title')}</h2>
         <div className={styles.card}>
           <Switch 
-            label="Navegar en Modo Incógnito" 
-            description="Nadie podrá ver que estás conectada ni ver tu perfil. Te mostrarás como 'Usuaria Anónima'."
+            label={t('privacy.incognito_label')}
+            description={t('privacy.incognito_desc')}
             checked={incognito}
             onChange={setIncognito}
           />
@@ -55,19 +57,19 @@ export default function PrivacyPage() {
               animate={{ opacity: 1, height: 'auto' }}
             >
               <EyeOff size={16} />
-              <span>Estás navegando de forma totalmente anónima.</span>
+              <span>{t('privacy.incognito_alert')}</span>
             </motion.div>
           )}
         </div>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Tus Datos en la Comunidad</h2>
+        <h2 className={styles.sectionTitle}>{t('privacy.community_data')}</h2>
         <div className={styles.cardGroup}>
           <div className={styles.cardItem}>
             <Switch 
-              label="Ocultar mi barrio" 
-              description="No recomendaremos grupos locales ni mostraremos tu ubicación aproximada."
+              label={t('privacy.hide_location')}
+              description={t('privacy.hide_location_desc')}
               checked={hideLocation}
               onChange={setHideLocation}
             />
@@ -75,8 +77,8 @@ export default function PrivacyPage() {
           <div className={styles.divider} />
           <div className={styles.cardItem}>
             <Switch 
-              label="Ocultar mi tiempo en Barcelona" 
-              description="No mostraremos tu experiencia a otras madres."
+              label={t('privacy.hide_time')}
+              description={t('privacy.hide_time_desc')}
               checked={hideStatus}
               onChange={setHideStatus}
             />
@@ -85,23 +87,61 @@ export default function PrivacyPage() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Tus Datos y MUSA</h2>
+        <h2 className={styles.sectionTitle}>{t('privacy.musa_data')}</h2>
         <div className={styles.infoCard}>
           <Database size={24} className={styles.infoIcon} />
           <div className={styles.infoText}>
-            <h3>¿Qué sabemos de ti?</h3>
+            <h3>{t('privacy.what_we_know')}</h3>
             <p>
-              Solo guardamos tu nombre o apodo ({user?.name || 'Invitada'}) y tus preferencias de categoría para la GNN de recomendaciones. No guardamos IPs, ubicaciones exactas ni datos bancarios.
+              {t('privacy.musa_desc', { name: user?.name || 'Invitada' })}
             </p>
           </div>
         </div>
       </section>
 
+      {isAdmin && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Administración</h2>
+          <div className={styles.card} style={{ borderLeft: '4px solid var(--color-primary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', gap: '1rem' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Panel de Administración</h3>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
+                  Accede al panel MUSA para moderar y gestionar contenidos.
+                </p>
+              </div>
+              <button 
+                onClick={() => navigate('/admin')}
+                style={{ 
+                  margin: 0, 
+                  backgroundColor: 'var(--color-primary)', 
+                  color: 'white', 
+                  border: 'none',
+                  padding: '0.6rem 1.2rem',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Abrir Panel
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className={styles.dangerZone}>
-        <h2 className={styles.dangerTitle}>Zona de Peligro</h2>
+        <h2 className={styles.dangerTitle}>{t('privacy.account_mgmt')}</h2>
+        
+        <button className={styles.logoutBtn} onClick={() => { logout(); navigate('/entry'); }}>
+          {t('privacy.logout')}
+        </button>
+
         <button className={styles.dangerBtn} onClick={handleDeleteData}>
           <UserX size={18} />
-          Borrar mi cuenta y todos mis datos
+          {t('privacy.delete_account')}
         </button>
       </section>
 

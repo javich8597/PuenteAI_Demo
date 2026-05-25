@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search, MessageSquare, ShieldCheck, HelpCircle, X } from 'lucide-react'
 import useForumStore from '../../store/useForumStore'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './QandAPage.module.css'
 
 export default function QandAPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { questions, addQuestion, fetchQuestions, subscribeToChanges } = useForumStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -38,16 +40,16 @@ export default function QandAPage() {
       <header className={styles.header}>
         <div className={styles.headerTitleRow}>
           <HelpCircle size={32} color="var(--color-primary)" />
-          <h1 className={styles.title}>Foro de Dudas</h1>
+          <h1 className={styles.title}>{t('qanda.title')}</h1>
         </div>
-        <p className={styles.subtitle}>Pregunta a la comunidad. Busca el escudo verde para respuestas seguras.</p>
+        <p className={styles.subtitle}>{t('qanda.subtitle')}</p>
       </header>
 
       <div className={styles.searchContainer}>
         <Search className={styles.searchIcon} size={20} />
         <input 
           type="text" 
-          placeholder="Busca tu duda antes de preguntar..." 
+          placeholder={t('qanda.search_placeholder')}
           className={styles.searchInput}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -68,13 +70,13 @@ export default function QandAPage() {
               <div className={styles.qMeta}>
                 <span className={styles.qAuthor}>{q.author}</span>
                 <span className={styles.dot}>•</span>
-                <span className={styles.qTime}>Reciente</span>
+                <span className={styles.qTime}>{t('qanda.recent')}</span>
               </div>
               
               <div className={styles.qStats}>
                 {q.isValidated && (
                   <div className={styles.validatedBadge}>
-                    <ShieldCheck size={16} /> Validada
+                    <ShieldCheck size={16} /> {t('qanda.validated')}
                   </div>
                 )}
                 <div className={styles.answersCount}>
@@ -87,7 +89,7 @@ export default function QandAPage() {
       </div>
 
       <button className={styles.fabBtn} onClick={() => setIsModalOpen(true)}>
-        <span>+ Haz una Pregunta</span>
+        <span>{t('qanda.ask_button')}</span>
       </button>
 
       <AnimatePresence>
@@ -105,7 +107,7 @@ export default function QandAPage() {
               exit={{ y: '100%' }}
             >
               <div className={styles.modalHeader}>
-                <h2>Nueva Pregunta</h2>
+                <h2>{t('qanda.modal_title')}</h2>
                 <button onClick={() => setIsModalOpen(false)} className={styles.closeBtn}>
                   <X size={24} />
                 </button>
@@ -113,14 +115,14 @@ export default function QandAPage() {
               <form onSubmit={handleCreateQuestion} className={styles.modalForm}>
                 <input 
                   type="text" 
-                  placeholder="Escribe el título de tu duda..." 
+                  placeholder={t('qanda.modal_placeholder_title')}
                   className={styles.modalInput}
                   value={newQTitle}
                   onChange={(e) => setNewQTitle(e.target.value)}
                   maxLength={100}
                 />
                 <textarea 
-                  placeholder="Explica tu situación con más detalle..." 
+                  placeholder={t('qanda.modal_placeholder_desc')}
                   className={styles.modalTextarea}
                   value={newQContent}
                   onChange={(e) => setNewQContent(e.target.value)}
@@ -131,7 +133,7 @@ export default function QandAPage() {
                   className={styles.submitBtn}
                   disabled={!newQTitle.trim() || !newQContent.trim()}
                 >
-                  Publicar Pregunta
+                  {t('qanda.modal_submit')}
                 </button>
               </form>
             </motion.div>

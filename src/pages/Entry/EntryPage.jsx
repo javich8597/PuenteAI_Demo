@@ -10,6 +10,7 @@ import { motion } from 'motion/react'
 import { Shield, Eye } from 'lucide-react'
 import useAuthStore from '../../store/useAuthStore'
 import { useAppStore } from '../../store/useAppStore'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './EntryPage.module.css'
 
 /* ──────────────────────────────────────────────
@@ -79,7 +80,8 @@ const fadeUp = {
 export default function EntryPage() {
   const navigate = useNavigate()
   const loginAsGuest = useAuthStore((s) => s.loginAsGuest)
-  const { language, toggleLanguage } = useAppStore()
+  const { language, setLanguage } = useAppStore()
+  const { t } = useTranslation()
 
   /** Explorar sin registro → modo invitado */
   const handleExploreAsGuest = async () => {
@@ -105,7 +107,7 @@ export default function EntryPage() {
       >
         <PuenteLogo />
         <p className={styles.tagline}>
-          Caminos de confianza para tu integración
+          {t('entry.tagline')}
         </p>
       </motion.div>
 
@@ -120,26 +122,26 @@ export default function EntryPage() {
         <button
           className={styles.btnPrimary}
           onClick={() => navigate('/onboarding')}
-          aria-label="Crear mi cuenta"
+          aria-label={t('entry.create_account')}
         >
-          Crear mi cuenta
+          {t('entry.create_account')}
         </button>
 
         <button
           className={styles.btnSecondary}
           onClick={() => navigate('/login')}
-          aria-label="Iniciar sesión"
+          aria-label={t('entry.login')}
         >
-          Iniciar sesión
+          {t('entry.login')}
         </button>
 
         <button
           className={styles.btnGhost}
           onClick={handleExploreAsGuest}
-          aria-label="Explorar sin registro"
+          aria-label={t('entry.explore')}
         >
           <Eye size={18} />
-          Explorar sin registro
+          {t('entry.explore')}
         </button>
       </motion.div>
 
@@ -158,17 +160,17 @@ export default function EntryPage() {
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === 'Enter' && navigate('/safety')}
-          aria-label="Acceder a contactos de emergencia"
+          aria-label={t('entry.emergency_title')}
         >
           <div className={styles.emergencyIcon}>
             <Shield size={22} />
           </div>
           <div className={styles.emergencyText}>
             <span className={styles.emergencyTitle}>
-              ¿Necesitas ayuda urgente?
+              {t('entry.emergency_title')}
             </span>
             <span className={styles.emergencyDesc}>
-              Accede a contactos de emergencia sin registro
+              {t('entry.emergency_desc')}
             </span>
           </div>
         </div>
@@ -177,17 +179,24 @@ export default function EntryPage() {
         <div className={styles.languageToggle} role="group" aria-label="Seleccionar idioma">
           <button
             className={language === 'es' ? styles.langBtnActive : styles.langBtn}
-            onClick={() => language !== 'es' && toggleLanguage()}
+            onClick={() => setLanguage('es')}
             aria-pressed={language === 'es'}
           >
             ES
           </button>
           <button
             className={language === 'ca' ? styles.langBtnActive : styles.langBtn}
-            onClick={() => language !== 'ca' && toggleLanguage()}
+            onClick={() => setLanguage('ca')}
             aria-pressed={language === 'ca'}
           >
             CA
+          </button>
+          <button
+            className={language === 'en' ? styles.langBtnActive : styles.langBtn}
+            onClick={() => setLanguage('en')}
+            aria-pressed={language === 'en'}
+          >
+            EN
           </button>
         </div>
       </motion.div>

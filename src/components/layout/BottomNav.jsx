@@ -1,15 +1,18 @@
 import { NavLink } from 'react-router'
 import { Home, Compass, MessageCircle, Users, User, Sprout } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './BottomNav.module.css'
 
 export default function BottomNav() {
+  const { t } = useTranslation()
+
   const tabs = [
-    { to: '/', icon: Home, label: 'Inicio' },
-    { to: '/explore', icon: Compass, label: 'Explorar' },
-    { to: '/chat', icon: MessageCircle, label: 'Chat', hasBadge: true },
-    { to: '/rewards', icon: Sprout, label: 'Jardín' },
-    { to: '/privacy', icon: User, label: 'Perfil' },
+    { to: '/', icon: Home, label: t('nav.home') },
+    { to: '/explore', icon: Compass, label: t('nav.explore') },
+    { to: '/chat', icon: MessageCircle, label: t('nav.chat'), hasBadge: true },
+    { to: '/rewards', icon: Sprout, label: t('nav.rewards') },
+    { to: '/privacy', icon: User, label: t('nav.profile') },
   ]
 
   return (

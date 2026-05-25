@@ -59,45 +59,62 @@ const useForumStore = create((set, get) => ({
   },
 
   addQuestion: async (title, content, category) => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
+    // 1. Actualización local inmediata (Optimistic UI para demo)
+    const newQuestionLocal = {
+      id: 'local-' + Date.now(),
+      author: 'Tú', 
+      title,
+      content,
+      category,
+      timestamp: new Date().toISOString(),
+      answers: 0,
+      isValidated: false,
+      answersList: []
+    };
+    
+    set((state) => ({
+      questions: [newQuestionLocal, ...state.questions]
+    }));
 
-    const { error } = await supabase
-      .from('questions')
-      .insert([
-        { 
-          author_id: session.user.id,
-          title, 
-          content, 
-          category 
-        }
-      ])
-      
-    if (!error) {
-      get().fetchQuestions()
-    } else {
-      console.error("Error adding question:", error)
+    // 2. Intento de guardado en Supabase (si falla, no rompe la UI)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase.from('questions').insert([
+        { author_id: session.user.id, title, content, category }
+      ]);
     }
   },
 
   addAnswer: async (questionId, content) => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
+    // 1. Actualización local inmediata (Optimistic UI)
+    const newAnswerLocal = {
+      id: 'local-ans-' + Date.now(),
+      author: 'Tú',
+      role: 'Usuario',
+      content,
+      timestamp: new Date().toISOString(),
+      isValidated: false
+    };
 
-    const { error } = await supabase
-      .from('answers')
-      .insert([
-        {
-          question_id: questionId,
-          author_id: session.user.id,
-          content
+    set((state) => ({
+      questions: state.questions.map(q => {
+        if (q.id === questionId) {
+          return {
+            ...q,
+            answers: q.answers + 1,
+            answersList: [...q.answersList, newAnswerLocal]
+          };
         }
-      ])
+        return q;
+      })
+    }));
 
-    if (!error) {
-      get().fetchQuestions()
-    } else {
-      console.error("Error adding answer:", error)
+    // 2. Intento de guardado en Supabase
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase.from('answers').insert([
+        { question_id: questionId, author_id: session.user.id, content }
+      ]);
     }
   },
   

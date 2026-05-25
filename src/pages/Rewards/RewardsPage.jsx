@@ -4,10 +4,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import { HeartHandshake, Sprout, HandHeart, Coffee, Info, X } from 'lucide-react'
 import useJardinStore from '../../store/useJardinStore'
 import styles from './RewardsPage.module.css'
+import { useTranslation } from '../../hooks/useTranslation'
 
 export default function RewardsPage() {
   const navigate = useNavigate()
   const { plantSeed, createRequest, getSeeds } = useJardinStore()
+  const { t } = useTranslation()
   
   const [activeModal, setActiveModal] = useState(null) // 'need' or 'want'
   const [desc, setDesc] = useState('')
@@ -41,24 +43,24 @@ export default function RewardsPage() {
       <header className={styles.header}>
         <div className={styles.titleRow}>
           <Sprout size={32} color="var(--color-success)" />
-          <h1 className={styles.title}>Jardín de Apoyo</h1>
+          <h1 className={styles.title}>{t('rewards.title')}</h1>
         </div>
         <p className={styles.subtitle}>
-          Nuestra comunidad funciona intercambiando tiempo. Pide ayuda cuando la necesites, y ayuda cuando puedas.
+          {t('rewards.subtitle')}
         </p>
       </header>
 
       <div className={styles.statusCard}>
         <div className={styles.statusInfo}>
-          <h3>Tu Jardín ha crecido:</h3>
+          <h3>{t('rewards.status_title')}</h3>
           <div className={styles.seedCount}>
             <Coffee size={24} color="var(--color-primary)" />
             <motion.span key={seedsCount} initial={{ scale: 1.5 }} animate={{ scale: 1 }}>
-              <strong>{seedsCount} Semillas</strong> plantadas (tiempo donado)
+              <strong>{t('rewards.seeds_count', { count: seedsCount })}</strong> {t('rewards.seeds_desc')}
             </motion.span>
           </div>
         </div>
-        <button className={styles.infoBtn} onClick={() => alert('Planta semillas ayudando a otras madres en la comunidad.')}>
+        <button className={styles.infoBtn} onClick={() => alert(t('rewards.info_alert'))}>
           <Info size={20} />
         </button>
       </div>
@@ -72,8 +74,8 @@ export default function RewardsPage() {
           <div className={styles.btnIconWrapper}>
             <HeartHandshake size={48} />
           </div>
-          <h2>Necesito una mano</h2>
-          <p>Crear petición</p>
+          <h2>{t('rewards.need_help_title')}</h2>
+          <p>{t('rewards.need_help_desc')}</p>
         </motion.button>
 
         <motion.button 
@@ -84,8 +86,8 @@ export default function RewardsPage() {
           <div className={styles.btnIconWrapper}>
             <HandHeart size={48} />
           </div>
-          <h2>Quiero ayudar hoy</h2>
-          <p>Ver quién lo necesita</p>
+          <h2>{t('rewards.offer_help_title')}</h2>
+          <p>{t('rewards.offer_help_desc')}</p>
         </motion.button>
       </div>
 
@@ -104,7 +106,7 @@ export default function RewardsPage() {
               exit={{ y: '100%' }}
             >
               <div className={styles.modalHeader}>
-                <h2>{activeModal === 'need' ? 'Pedir Ayuda' : 'Ofrecer Ayuda'}</h2>
+                <h2>{activeModal === 'need' ? t('rewards.modal_need_title') : t('rewards.modal_offer_title')}</h2>
                 <button onClick={() => setActiveModal(null)} className={styles.closeBtn}>
                   <X size={24} />
                 </button>
@@ -112,11 +114,11 @@ export default function RewardsPage() {
               <form onSubmit={handleSubmit} className={styles.modalForm}>
                 <p style={{ marginBottom: '1rem', color: 'var(--color-text-secondary)'}}>
                   {activeModal === 'need' 
-                    ? '¿En qué te podemos ayudar? (Ej: "Necesito alguien que recoja a mi niño a las 17h")'
-                    : '¿En qué te gustaría ayudar hoy? (Ej: "Tengo un par de horas libres para acompañar al médico")'}
+                    ? t('rewards.modal_need_desc')
+                    : t('rewards.modal_offer_desc')}
                 </p>
                 <textarea 
-                  placeholder="Escribe aquí..." 
+                  placeholder={t('rewards.modal_placeholder')} 
                   className={styles.modalTextarea}
                   value={desc}
                   onChange={(e) => setDesc(e.target.value)}
@@ -128,7 +130,7 @@ export default function RewardsPage() {
                   disabled={!desc.trim()}
                   style={{ backgroundColor: activeModal === 'need' ? 'var(--color-primary)' : 'var(--color-success)' }}
                 >
-                  Publicar en la Comunidad
+                  {t('rewards.modal_submit')}
                 </button>
               </form>
             </motion.div>

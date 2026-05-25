@@ -10,6 +10,10 @@ const useAuthStore = create((set, get) => ({
   isAdmin: false,
   user: defaultUser,
   isLoading: true, // Para mostrar un spinner mientras Supabase comprueba la sesión
+  onboardingAnswers: {},
+  prioritizedCategories: [],
+
+  setOnboardingData: (answers, priorities) => set({ onboardingAnswers: answers, prioritizedCategories: priorities }),
 
   initializeAuth: () => {
     // Escuchar cambios de estado en la sesión (login, logout)
@@ -71,31 +75,90 @@ const useAuthStore = create((set, get) => ({
       if (profileError) console.error("Error creating profile:", profileError);
 
       // WORKAROUND PARA LA DEMO: 
-      // Si Supabase tiene 'Confirmación de Email' activada, no devuelve sesión.
-      // Forzamos la sesión local para que el flujo de la demo no se rompa y entre a la app.
-      if (!data.session) {
-        set({
-          isAuthenticated: true,
-          isLoading: false,
-          user: {
-            id: data.user.id,
-            email: data.user.email,
-            name: name || 'Amiga',
-            avatar: name ? name.charAt(0).toUpperCase() : '👤',
-            role: 'user',
-            seeds: 0
-          }
-        });
-      }
+      // Forzamos la sesión local para que el flujo de la demo no se rompa y entre a la app inmediatamente.
+      set({
+        isAuthenticated: true,
+        isLoading: false,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          name: name || 'Amiga',
+          avatar: name ? name.charAt(0).toUpperCase() : '👤',
+          role: 'user',
+          seeds: 0
+        }
+      });
     }
   },
 
   signIn: async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Credenciales de administración para la demo (locales y ultra-robustas)
+    if (cleanEmail === 'admin@demo.com' && password === 'admin123') {
+      set({
+        isAuthenticated: true,
+        isGuest: false,
+        isLoading: false,
+        user: {
+          id: 'admin-002',
+          email: 'admin@demo.com',
+          name: 'Admin',
+          avatar: '👑',
+          role: 'admin',
+          seeds: 99
+        },
+        isAdmin: true
+      });
+      return;
+    }
+    
+    if (cleanEmail === 'marta@puente.ai' && password === 'puente123') {
+      set({
+        isAuthenticated: true,
+        isGuest: false,
+        isLoading: false,
+        user: {
+          id: 'admin-001',
+          email: 'marta@puente.ai',
+          name: 'Marta',
+          avatar: 'Ⓜ️',
+          role: 'admin',
+          seeds: 12
+        },
+        isAdmin: true
+      });
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error;
+
+    // Forzar actualización síncrona del estado para evitar race conditions en la UI
+    if (data.session) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.session.user.id)
+        .single();
+
+      set({
+        isAuthenticated: true,
+        isLoading: false,
+        user: {
+          id: data.session.user.id,
+          email: data.session.user.email,
+          name: profile?.name || data.session.user.email.split('@')[0],
+          avatar: profile?.avatar || '👤',
+          role: profile?.role || 'user',
+          seeds: profile?.seeds || 0
+        },
+        isAdmin: profile?.role === 'admin'
+      });
+    }
   },
 
   loginAsGuest: async () => {

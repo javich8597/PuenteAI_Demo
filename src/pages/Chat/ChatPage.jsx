@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
 import { MessageCircle, Users, Search, ChevronRight, Check, CheckCheck, Edit } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
+import { useTranslation } from '../../hooks/useTranslation'
 import styles from './ChatPage.module.css'
 
 export default function ChatPage() {
   const navigate = useNavigate()
   const { conversations, fetchMessages, subscribeToMessages } = useChatStore()
   const [searchQuery, setSearchQuery] = useState('')
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchMessages()
@@ -37,14 +39,14 @@ export default function ChatPage() {
       transition={{ duration: 0.3 }}
     >
       <header className={styles.header}>
-        <h1 className={styles.title}>Mensajes</h1>
+        <h1 className={styles.title}>{t('chat.title')}</h1>
       </header>
 
       <div className={styles.searchContainer}>
         <Search className={styles.searchIcon} size={20} />
         <input 
           type="text" 
-          placeholder="Buscar chats..." 
+          placeholder={t('chat.search')}
           className={styles.searchInput}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

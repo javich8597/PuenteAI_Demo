@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { LayoutDashboard, FileText, Users, ShieldAlert, LogOut } from 'lucide-react'
+import { LayoutDashboard, FileText, Users, ShieldAlert, LogOut, Eye } from 'lucide-react'
 import useAuthStore from '../store/useAuthStore'
 import styles from './AdminLayout.module.css'
 
@@ -43,6 +43,25 @@ export default function AdminLayout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
+          
+          <div style={{ margin: '0.75rem 0.5rem 0.5rem 0.5rem', borderTop: '1px solid var(--color-border)' }} />
+          
+          <button 
+            className={styles.navItem} 
+            onClick={() => navigate('/')}
+            style={{ 
+              border: 'none', 
+              background: 'none', 
+              width: 'calc(100% - 8px)', 
+              textAlign: 'left', 
+              cursor: 'pointer',
+              color: 'var(--color-primary-dark)',
+              fontStyle: 'normal'
+            }}
+          >
+            <Eye size={20} color="var(--color-primary)" />
+            <span>Vista de Usuaria</span>
+          </button>
         </nav>
 
         <div className={styles.sidebarFooter}>
