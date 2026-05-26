@@ -173,3 +173,32 @@
 .logoutBtn:hover {
   background-color: var(--color-bg-warm);
 }
+/* ---- Language Toggle ---- */
+.languageToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background-color: rgba(61, 64, 91, 0.06);
+  border-radius: var(--radius-full);
+}
+
+.langBtn {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-tertiary);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  min-height: 32px;
+}
+
+.langBtnActive {
+  composes: langBtn;
+  background-color: var(--color-surface);
+  color: var(--color-navy);
+  box-shadow: var(--shadow-sm);
+}

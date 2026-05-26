@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
-import { Users, AlertCircle, CheckCircle, Activity, BarChart3, TrendingUp } from 'lucide-react'
+import { Users, AlertCircle, CheckCircle, Activity, TrendingUp } from 'lucide-react'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import styles from './Dashboard.module.css'
 
 const stats = [
@@ -7,6 +8,16 @@ const stats = [
   { label: 'Pendientes de Moderación', value: '24', trend: '-5%', icon: AlertCircle, color: '#E07A5F' },
   { label: 'Respuestas Validadas', value: '89', trend: '+22%', icon: CheckCircle, color: '#81B29A' },
   { label: 'Grupos Activos', value: '15', trend: '0%', icon: Activity, color: '#F2CC8F' },
+]
+
+const chartData = [
+  { name: 'Lun', conexiones: 120 },
+  { name: 'Mar', conexiones: 150 },
+  { name: 'Mié', conexiones: 180 },
+  { name: 'Jue', conexiones: 140 },
+  { name: 'Vie', conexiones: 210 },
+  { name: 'Sáb', conexiones: 250 },
+  { name: 'Dom', conexiones: 290 },
 ]
 
 export default function Dashboard() {
@@ -49,9 +60,24 @@ export default function Dashboard() {
             <Activity size={18} color="var(--color-text-secondary)" />
           </div>
           <div className={styles.panelContent}>
-            <div className={styles.chartPlaceholder}>
-              <BarChart3 size={48} color="var(--color-border)" />
-              <p>Simulación: Conexiones generadas por Ego-Network</p>
+            <div style={{ width: '100%', height: 200 }}>
+              <ResponsiveContainer>
+                <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorConexiones" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  />
+                  <Area type="monotone" dataKey="conexiones" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorConexiones)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
             <div className={styles.gnnStats}>
               <div className={styles.gnnStat}>

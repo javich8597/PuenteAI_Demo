@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { LayoutDashboard, FileText, Users, ShieldAlert, LogOut, Eye } from 'lucide-react'
+import { LayoutDashboard, FileText, Users, ShieldAlert, LogOut, Eye, Network } from 'lucide-react'
 import useAuthStore from '../store/useAuthStore'
 import styles from './AdminLayout.module.css'
 
@@ -14,6 +14,7 @@ export default function AdminLayout() {
 
   const navItems = [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+    { to: '/admin/gnn', icon: Network, label: 'Grafo GNN' },
     { to: '/admin/content', icon: FileText, label: 'Contenido' },
     { to: '/admin/users', icon: Users, label: 'Usuarias' },
     { to: '/admin/moderation', icon: ShieldAlert, label: 'Moderación' },

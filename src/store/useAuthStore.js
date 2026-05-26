@@ -16,8 +16,14 @@ const useAuthStore = create((set, get) => ({
   setOnboardingData: (answers, priorities) => set({ onboardingAnswers: answers, prioritizedCategories: priorities }),
 
   initializeAuth: () => {
-    // Escuchar cambios de estado en la sesión (login, logout)
     supabase.auth.onAuthStateChange(async (event, session) => {
+      const state = get();
+      // Si estamos en una sesión demo local, no la sobrescribimos
+      if (state.user && (state.user.id === 'guest' || state.user.id.startsWith('admin-') || state.user.id.startsWith('demo-'))) {
+        set({ isLoading: false });
+        return;
+      }
+
       if (session) {
         // Fetch profile data from our custom `profiles` table
         const { data: profile } = await supabase

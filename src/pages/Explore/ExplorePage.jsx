@@ -19,9 +19,10 @@ const categoryIconMap = {
 }
 
 const mockPeople = [
-  { id: 1, name: 'María C.', neighborhood: 'Nou Barris', time: '1 año', role: 'Madre Tutora', isTutor: true },
-  { id: 2, name: 'Diana R.', neighborhood: 'Sants', time: '4 meses', role: 'Recién llegada', isTutor: false },
-  { id: 3, name: 'Laura P.', neighborhood: 'Gràcia', time: '3 años', role: 'Madre Tutora', isTutor: true },
+  { id: 1, name: 'Carmen G.', neighborhood: 'Nou Barris', time: '1 año', role: 'Madre Tutora', isTutor: true },
+  { id: 2, name: 'Aisha F.', neighborhood: 'El Raval', time: '2 meses', role: 'Recién llegada', isTutor: false },
+  { id: 3, name: 'Elena R.', neighborhood: 'Gràcia', time: '3 años', role: 'Madre Tutora', isTutor: true },
+  { id: 4, name: 'Valentina P.', neighborhood: 'Sants', time: '6 meses', role: 'Recién llegada', isTutor: false },
 ]
 
 export default function ExplorePage() {

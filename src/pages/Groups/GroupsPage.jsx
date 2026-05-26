@@ -2,36 +2,46 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
 import { Search, Users, Calendar, MapPin, ChevronRight, UserPlus } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './GroupsPage.module.css'
 
 const mockGroups = [
   {
     id: 'g1',
-    name: 'Madres de Nou Barris',
+    name: 'Red de Madres de Nou Barris',
     category: 'Apoyo Vecinal',
     members: 142,
-    nextEvent: 'Café de bienvenida',
-    eventDate: 'Este Sábado, 10:00h',
+    nextEvent: 'Encuentro y café de bienvenida para nuevas familias',
+    eventDate: 'Sábado 28, 10:00h - Casal de Barri',
     color: 'var(--color-primary)'
   },
   {
     id: 'g2',
-    name: 'Intercambio Ropa Infantil',
+    name: 'Intercambio Sostenible Infantil',
     category: 'Sostenibilidad',
     members: 89,
-    nextEvent: 'Mercadillo de Primavera',
-    eventDate: 'Domingo 15, 11:30h',
+    nextEvent: 'Mercadillo de Primavera: Ropa y Juguetes',
+    eventDate: 'Domingo 15, 11:30h - Plaça Mayor',
     color: 'var(--color-secondary)'
   },
   {
     id: 'g3',
-    name: 'Apoyo Escolar - Primaria',
+    name: 'Apoyo Escolar y Crianza',
     category: 'Educación',
     members: 234,
-    nextEvent: null,
-    eventDate: null,
+    nextEvent: 'Taller: Cómo ayudar con los deberes de primaria',
+    eventDate: 'Jueves 12, 17:30h - Online',
     color: 'var(--color-success)'
+  },
+  {
+    id: 'g4',
+    name: 'Asesoría Legal y Extranjería',
+    category: 'Legal',
+    members: 315,
+    nextEvent: 'Charla: Renovación de permisos de residencia',
+    eventDate: 'Miércoles 18, 18:00h - Centro Cívico',
+    color: 'var(--color-accent)'
   }
 ]
 
@@ -41,9 +51,12 @@ export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [joinedGroups, setJoinedGroups] = useState({})
 
-  const handleJoin = (e, groupId) => {
+  const handleJoin = (e, group) => {
     e.stopPropagation() // Prevent navigation to group details
-    setJoinedGroups(prev => ({ ...prev, [groupId]: true }))
+    setJoinedGroups(prev => ({ ...prev, [group.id]: true }))
+    toast.success(`Te has unido a ${group.name}`, {
+      icon: '👥'
+    })
   }
 
   return (
@@ -97,7 +110,7 @@ export default function GroupsPage() {
               </div>
               <button 
                 className={`${styles.joinBtn} ${isJoined ? styles.joinedBtn : ''}`}
-                onClick={(e) => handleJoin(e, group.id)}
+                onClick={(e) => handleJoin(e, group)}
               >
                 {isJoined ? t('groups.joined') : t('groups.join')}
               </button>

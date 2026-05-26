@@ -13,6 +13,8 @@ import LoginPage from './pages/Login/LoginPage'
 import HomePage from './pages/Home/HomePage'
 import CategoriesPage from './pages/Categories/CategoriesPage'
 import CategoryDetail from './pages/Categories/CategoryDetail'
+import DrillDownQuiz from './pages/Categories/DrillDownQuiz'
+import ActionPlan from './pages/Categories/ActionPlan'
 import RecommendationsPage from './pages/Recommendations/RecommendationsPage'
 import ExplorePage from './pages/Explore/ExplorePage'
 import ChatPage from './pages/Chat/ChatPage'
@@ -27,10 +29,12 @@ import PrivacyPage from './pages/Privacy/PrivacyPage'
 
 // Admin
 import AdminLayout from './admin/AdminLayout'
-import Dashboard from './admin/Dashboard'
-import ContentManager from './admin/ContentManager'
-import UserManager from './admin/UserManager'
-import ModerationPanel from './admin/ModerationPanel'
+import AdminDashboard from './admin/Dashboard'
+import AdminGNNGraph from './admin/GNNGraphPanel'
+import AdminContent from './admin/ContentManager'
+import AdminUsers from './admin/UserManager'
+import AdminModeration from './admin/ModerationPanel'
+import { Toaster } from 'react-hot-toast'
 
 /** 
  * ProtectedRoute — redirige a /entry si no hay sesión activa.
@@ -100,6 +104,19 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          style: {
+            borderRadius: '12px',
+            background: 'var(--color-surface)',
+            color: 'var(--color-text)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            fontFamily: 'var(--font-body)',
+            padding: '16px'
+          },
+        }}
+      />
       <Routes>
         {/* --- Rutas públicas --- */}
         <Route path="/entry" element={<EntryPage />} />
@@ -116,6 +133,8 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="categories/:id" element={<CategoryDetail />} />
+          <Route path="categories/:id/drilldown" element={<DrillDownQuiz />} />
+          <Route path="categories/:id/action-plan" element={<ActionPlan />} />
           <Route path="recommendations" element={<RecommendationsPage />} />
           <Route path="explore" element={<ExplorePage />} />
           <Route path="chat" element={<RestrictedRoute><ChatPage /></RestrictedRoute>} />
@@ -128,16 +147,20 @@ export default function App() {
           <Route path="privacy" element={<PrivacyPage />} />
         </Route>
 
-        {/* --- Panel de Administración --- */}
-        <Route path="/admin" element={
-          <AdminRoute>
-            <AdminLayout />
-          </AdminRoute>
-        }>
-          <Route index element={<Dashboard />} />
-          <Route path="content" element={<ContentManager />} />
-          <Route path="users" element={<UserManager />} />
-          <Route path="moderation" element={<ModerationPanel />} />
+        {/* --- Rutas de Administración --- */}
+        <Route 
+          path="/admin" 
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="gnn" element={<AdminGNNGraph />} />
+          <Route path="content" element={<AdminContent />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="moderation" element={<AdminModeration />} />
         </Route>
 
         {/* Fallback */}

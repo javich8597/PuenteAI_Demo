@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router'
 import { motion } from 'motion/react'
-import { PlayCircle, CheckCircle, ChevronLeft, Video, Lightbulb, Users } from 'lucide-react'
+import { PlayCircle, CheckCircle, ChevronLeft, Video, Lightbulb, Users, FileText } from 'lucide-react'
 import categories from '../../data/categories'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './CategoryDetail.module.css'
@@ -40,12 +40,21 @@ export default function CategoryDetail() {
         </section>
 
         <section className={styles.actionSection}>
-          <button className={styles.primaryBtn} style={{ backgroundColor: category.color }}>
-            <Video size={24} />
+          <button 
+            className={styles.primaryBtn} 
+            style={{ backgroundColor: category.color, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}
+            onClick={() => navigate(`/categories/${category.id}/drilldown`)}
+          >
+            <FileText size={24} />
+            Solicitar ayuda personalizada (Plan de Acción)
+          </button>
+
+          <button className={styles.primaryBtn} style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', border: `1px solid ${category.color}` }}>
+            <Video size={24} color={category.color} />
             {t('category_detail.watch_full')}
           </button>
           
-          <div className={styles.tipsBox} style={{ borderColor: `${category.color}50`, backgroundColor: `${category.color}10` }}>
+          <div className={styles.tipsBox} style={{ borderColor: `${category.color}50`, backgroundColor: `${category.color}10`, marginTop: '1.5rem' }}>
             <div className={styles.tipsHeader}>
               <Lightbulb size={20} color={category.color} />
               <h3>{t('category_detail.important')}</h3>

@@ -18,7 +18,7 @@ const useChatStore = create((set, get) => ({
     const myId = session.user.id;
 
     // Fetch all messages where I am sender or receiver
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('chat_messages')
       .select(`
         id,
@@ -34,8 +34,7 @@ const useChatStore = create((set, get) => ({
 
     if (error) {
       console.error('Error fetching messages:', error);
-      set({ isLoading: false });
-      return;
+      data = [];
     }
 
     const conversationsMap = new Map();
@@ -126,11 +125,29 @@ const useChatStore = create((set, get) => ({
       if (!msgs[convId]) msgs[convId] = [];
       msgs[convId] = [...msgs[convId], newMsgLocal];
       
-      const convs = s.conversations.map(c => 
-        c.id === convId 
-          ? { ...c, lastMessage: text, lastMessageTime: new Date().toISOString() } 
-          : c
-      );
+      let convExists = false;
+      const convs = s.conversations.map(c => {
+        if (c.id === convId) {
+          convExists = true;
+          return { ...c, lastMessage: text, lastMessageTime: new Date().toISOString() }
+        }
+        return c;
+      });
+
+      if (!convExists) {
+        let newConvName = 'Chat';
+        if (convId.startsWith('group-')) {
+          newConvName = 'Grupo Temático';
+        }
+        convs.unshift({
+          id: convId,
+          name: newConvName,
+          lastMessage: text,
+          lastMessageTime: new Date().toISOString(),
+          unread: 0,
+          isGroup: convId.startsWith('group-')
+        });
+      }
       
       return { messages: msgs, conversations: convs };
     });
@@ -140,10 +157,15 @@ const useChatStore = create((set, get) => ({
       set((s) => {
         const msgs = { ...s.messages };
         if (!msgs[convId]) msgs[convId] = [];
+        let senderName = 'Marta (Madre Tutora)';
+        if (convId.startsWith('group-')) {
+          senderName = 'Usuaria de la comunidad';
+        }
+
         msgs[convId] = [...msgs[convId], {
           id: 'auto-' + Date.now(),
-          senderId: convId,
-          senderName: 'Marta (Madre Tutora)',
+          senderId: convId.startsWith('group-') ? 'user-123' : convId,
+          senderName: senderName,
           text: 'Entiendo perfectamente tu situación. Estoy aquí para apoyarte. Cuéntame un poco más para ver cómo podemos enfocarlo.',
           timestamp: new Date().toISOString(),
           isOwn: false,

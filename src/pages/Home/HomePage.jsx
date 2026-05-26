@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
 import { 
@@ -16,6 +16,7 @@ import {
   ThumbsUp,
   ThumbsDown
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 import useAuthStore from '../../store/useAuthStore'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './HomePage.module.css'
@@ -84,7 +85,7 @@ export default function HomePage() {
             <p className={styles.gnnReason}>
               {t('home.gnn_reason', { neighborhood: user?.neighborhood || 'tu barrio', language: user?.language || 'tu idioma' })}
             </p>
-            <button className={styles.gnnAction} onClick={() => navigate('/chat')}>
+            <button className={styles.gnnAction} onClick={() => navigate('/chat/admin-001')}>
               {t('home.gnn_button')}
             </button>
             

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { motion } from 'motion/react'
-import { ChevronLeft, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Mic } from 'lucide-react'
+import { ChevronLeft, Send, Phone, Video, MoreVertical, Image as ImageIcon, Paperclip, Mic, Users } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
+import { categories } from '../../data/categories'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './ChatConversation.module.css'
 
@@ -15,7 +16,22 @@ export default function ChatConversation() {
   const [inputText, setInputText] = useState('')
   const messagesEndRef = useRef(null)
 
-  const conversation = conversations.find(c => c.id === id) || { name: 'Chat', id: id }
+  let conversation = conversations.find(c => c.id === id)
+  
+  if (!conversation) {
+    if (id.startsWith('group-')) {
+      const catId = id.replace('group-', '')
+      const cat = categories.find(c => c.id === catId)
+      conversation = {
+        id,
+        name: cat ? t(`categories.${cat.id}.name`) : 'Grupo Temático',
+        avatar: <Users size={20} />,
+        isGroup: true
+      }
+    } else {
+      conversation = { name: 'Chat', id: id }
+    }
+  }
   const currentMessages = messages[id] || []
 
   useEffect(() => {
@@ -57,7 +73,9 @@ export default function ChatConversation() {
           </div>
           <div className={styles.userInfo}>
             <h2 className={styles.userName}>{conversation.name}</h2>
-            <span className={styles.userStatus}>{t('chat.online')}</span>
+            <span className={styles.userStatus}>
+              {conversation.isGroup ? t('groups.members') + ': 142' : t('chat.online')}
+            </span>
           </div>
         </div>
         <div className={styles.headerRight}>
@@ -77,6 +95,11 @@ export default function ChatConversation() {
               key={msg.id} 
               className={`${styles.messageBubble} ${msg.isOwn ? styles.ownMessage : styles.otherMessage}`}
             >
+              {conversation.isGroup && !msg.isOwn && (
+                <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '4px' }}>
+                  {msg.senderName}
+                </div>
+              )}
               <div className={styles.messageText}>{msg.text}</div>
               <div className={styles.messageTime}>
                 {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}

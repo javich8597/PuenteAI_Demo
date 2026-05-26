@@ -119,7 +119,9 @@ export const translations = {
 
     // Chat
     'chat.title': 'Mensajes',
-    'chat.search': 'Buscar chats...',
+    'chat.search': 'Buscar chat o contacto...',
+    'chat.thematic_groups': 'Grupos Temáticos Recomendados',
+    'chat.recent': 'Chats Recientes',
     'chat.online': 'En línea',
     'chat.start_conversation': 'Empieza la conversación con {name}',
     'chat.type_message': 'Escribe un mensaje...',
@@ -336,7 +338,9 @@ export const translations = {
     'explore.connect': 'Connectar',
 
     'chat.title': 'Missatges',
-    'chat.search': 'Cercar xats...',
+    'chat.search': 'Buscar xat o contacte...',
+    'chat.thematic_groups': 'Grups Temàtics Recomanats',
+    'chat.recent': 'Xats Recents',
     'chat.online': 'En línia',
     'chat.start_conversation': 'Comença la conversa amb {name}',
     'chat.type_message': 'Escriu un missatge...',
@@ -547,7 +551,9 @@ export const translations = {
     'explore.connect': 'Connect',
 
     'chat.title': 'Messages',
-    'chat.search': 'Search chats...',
+    'chat.search': 'Search chat or contact...',
+    'chat.thematic_groups': 'Recommended Thematic Groups',
+    'chat.recent': 'Recent Chats',
     'chat.online': 'Online',
     'chat.start_conversation': 'Start the conversation with {name}',
     'chat.type_message': 'Type a message...',

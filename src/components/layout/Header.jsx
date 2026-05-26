@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router'
-import { ChevronLeft, Bell, LogOut } from 'lucide-react'
+import { ChevronLeft, Bell, LogOut, ShieldAlert } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import styles from './Header.module.css'
 
@@ -8,6 +8,7 @@ export default function Header() {
   const location = useLocation()
   const isHome = location.pathname === '/'
   const logout = useAuthStore(s => s.logout)
+  const isAdmin = useAuthStore(s => s.isAdmin)
 
   const handleLogout = () => {
     logout()
@@ -39,6 +40,16 @@ export default function Header() {
             <button className={styles.iconButton} aria-label="Notificaciones">
               <Bell size={24} />
               <span className={styles.notificationBadge} />
+            </button>
+          )}
+          {isAdmin && (
+            <button 
+              className={styles.iconButton} 
+              aria-label="Panel de Administración" 
+              onClick={() => navigate('/admin')}
+              style={{ color: 'var(--color-error)' }}
+            >
+              <ShieldAlert size={24} />
             </button>
           )}
           <button className={styles.iconButton} aria-label="Cerrar sesión" onClick={handleLogout}>

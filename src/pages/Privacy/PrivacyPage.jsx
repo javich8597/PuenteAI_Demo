@@ -4,12 +4,14 @@ import { motion } from 'motion/react'
 import { Shield, EyeOff, UserX, Database, ChevronLeft, AlertTriangle } from 'lucide-react'
 import Switch from '../../components/ui/Switch'
 import useAuthStore from '../../store/useAuthStore'
+import useAppStore from '../../store/useAppStore'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './PrivacyPage.module.css'
 
 export default function PrivacyPage() {
   const navigate = useNavigate()
   const { user, logout, isGuest, isAdmin } = useAuthStore()
+  const { language, setLanguage } = useAppStore()
   const { t } = useTranslation()
 
   // Local state for toggles (mocking real privacy settings)
@@ -40,6 +42,32 @@ export default function PrivacyPage() {
           {t('privacy.subtitle')}
         </p>
       </header>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Idioma / Language</h2>
+        <div className={styles.card} style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.languageToggle} role="group" aria-label="Seleccionar idioma">
+            <button
+              className={language === 'es' ? styles.langBtnActive : styles.langBtn}
+              onClick={() => setLanguage('es')}
+            >
+              ES
+            </button>
+            <button
+              className={language === 'ca' ? styles.langBtnActive : styles.langBtn}
+              onClick={() => setLanguage('ca')}
+            >
+              CA
+            </button>
+            <button
+              className={language === 'en' ? styles.langBtnActive : styles.langBtn}
+              onClick={() => setLanguage('en')}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+      </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('privacy.incognito_title')}</h2>

@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'motion/react'
-import { MessageCircle, Users, Search, ChevronRight, Check, CheckCheck, Edit } from 'lucide-react'
+import { MessageCircle, Users, Search, ChevronRight, Check, CheckCheck, Edit, FileText, Home, Briefcase, Heart, ShieldCheck, GraduationCap, Globe } from 'lucide-react'
 import useChatStore from '../../store/useChatStore'
+import useAuthStore from '../../store/useAuthStore'
+import { categories } from '../../data/categories'
 import { useTranslation } from '../../hooks/useTranslation'
 import styles from './ChatPage.module.css'
 
 export default function ChatPage() {
   const navigate = useNavigate()
   const { conversations, fetchMessages, subscribeToMessages } = useChatStore()
+  const { prioritizedCategories } = useAuthStore()
   const [searchQuery, setSearchQuery] = useState('')
   const { t } = useTranslation()
 
@@ -31,6 +34,16 @@ export default function ChatPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  const iconMap = {
+    FileText, Home, Briefcase, Heart, ShieldCheck, Users, GraduationCap, Globe
+  }
+
+  // Obtenemos los grupos temáticos a partir de los intereses del usuario
+  // Si no hay intereses guardados, mostramos los 3 primeros por defecto
+  const thematicCategories = prioritizedCategories.length > 0 
+    ? categories.filter(c => prioritizedCategories.includes(c.id))
+    : categories.slice(0, 3)
+
   return (
     <motion.div 
       className={styles.page}
@@ -52,6 +65,28 @@ export default function ChatPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+
+      <h2 className={styles.sectionTitle}>{t('chat.thematic_groups')}</h2>
+      <div className={styles.groupsScroll}>
+        {thematicCategories.map(cat => {
+          const Icon = iconMap[cat.icon] || Users
+          return (
+            <motion.div 
+              key={cat.id} 
+              className={styles.thematicGroupCard}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate(`/chat/group-${cat.id}`)}
+            >
+              <div className={styles.thematicGroupIcon} style={{ backgroundColor: cat.color }}>
+                <Icon size={24} />
+              </div>
+              <span className={styles.thematicGroupName}>{t(`categories.${cat.id}.name`)}</span>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      <h2 className={styles.sectionTitle}>{t('chat.recent')}</h2>
 
       <div className={styles.list}>
         {filteredConvs.map(conv => {
