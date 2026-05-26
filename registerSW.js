@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/PuenteAI_Demo/sw.js', { scope: '/PuenteAI_Demo/' })})}
